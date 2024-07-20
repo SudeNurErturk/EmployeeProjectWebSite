@@ -1,7 +1,5 @@
 package com.example.EmployeeWeb.Employee.service;
 
-import com.example.EmployeeWeb.Employee.DTO.FilterEmployeeDTO;
-import com.example.EmployeeWeb.Employee.mapper.EmployeeDTOMapper;
 import com.example.EmployeeWeb.Employee.model.Employee;
 import com.example.EmployeeWeb.Employee.repository.EmployeeRepository;
 
@@ -10,6 +8,7 @@ import com.example.EmployeeWeb.PersonalInformation.repository.PersonalInfoReposi
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -33,8 +32,13 @@ public class EmployeeService {
     }
 
 
-    public List<Employee> getEmployees(Specification<Employee> spec) {
-        return employeeRepository.findAll(spec);
+//    public List<Employee> getEmployees(Specification<Employee> spec) {
+//        return employeeRepository.findAll(spec);
+//    }
+
+
+    public List<Employee> getEmployees(Specification<Employee> spec, Sort sort) {
+        return employeeRepository.findAll(spec, sort);
     }
 
 

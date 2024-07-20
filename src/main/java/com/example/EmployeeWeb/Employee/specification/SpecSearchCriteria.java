@@ -9,10 +9,9 @@ public class SpecSearchCriteria {
 
 
 
-    public SpecSearchCriteria(String key, SearchOperation operation, String orPredicate, Object value) {
+    public SpecSearchCriteria(String key, SearchOperation operation,  Object value) {
         this.key = key;
         this.operation = operation;
-        this.orPredicate = Boolean.parseBoolean(orPredicate);
         this.value = value;
     }
 

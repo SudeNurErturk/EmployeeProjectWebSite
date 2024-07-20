@@ -5,12 +5,12 @@ import lombok.Getter;
 
 @Getter
 public enum Level {
-    L0(0,"Level0"),
-    L1(1, "Level 1"),
-    L2(2, "Level 2"),
-    L3(3, "Level 3"),
-    L4(4,"Level 4"),
-    L5(5, "Level 5");
+    L0(1,"Level 0"),
+    L1(2, "Level 1"),
+    L2(3, "Level 2"),
+    L3(4, "Level 3"),
+    L4(5,"Level 4"),
+    L5(6, "Level 5");
 
     private final int value;
     private final String description;

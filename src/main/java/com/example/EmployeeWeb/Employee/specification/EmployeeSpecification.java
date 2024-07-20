@@ -31,12 +31,14 @@ public class EmployeeSpecification implements Specification<EmployeeDTO> {
                 return builder.lessThan(root.get(criteria.getKey()), criteria.getValue().toString());
             case LIKE:
                 return builder.like(root.get(criteria.getKey()), criteria.getValue().toString());
-            case STARTS_WITH:
-                return builder.like(root.get(criteria.getKey()), criteria.getValue() + "%");
-            case ENDS_WITH:
-                return builder.like(root.get(criteria.getKey()), "%" + criteria.getValue());
-            case CONTAINS:
-                return builder.like(root.get(criteria.getKey()), "%" + criteria.getValue() + "%");
+//            case STARTS_WITH:
+//                return builder.like(root.get(criteria.getKey()), criteria.getValue() + "%");
+//            case ENDS_WITH:
+//                return builder.like(root.get(criteria.getKey()), "%" + criteria.getValue());
+//            case CONTAINS:
+//                return builder.like(root.get(criteria.getKey()), "%" + criteria.getValue() + "%");
+//
+//
             default:
                 return null;
         }

@@ -1,7 +1,7 @@
 package com.example.EmployeeWeb.Employee.specification;
 
 public enum SearchOperation {
-        EQUALITY(":", "Equalitu"),
+        EQUALITY(":", "Equality"),
         NEGATION("!", "negation"),
         GREATER_THAN(">", "greater_than"),
         LESS_THAN("<", "less_than"),

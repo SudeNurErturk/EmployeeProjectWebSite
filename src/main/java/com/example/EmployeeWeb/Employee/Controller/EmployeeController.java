@@ -46,34 +46,25 @@ public class EmployeeController {
     }
 
 
-
-
-
-
-    @GetMapping("/listSpec")
-    public List<EmployeeDTORequest> getEmployees(@RequestParam(required = false) String EmployeeName,
-                                                 @RequestParam(required = false) String EmployeeSurname,
-                                                 @RequestParam(required = false) String EmployeePhone,
-                                                 @RequestParam(required = false) String EmployeeEmail) {
-
+    @PostMapping("/search")
+    public List<FilterEmployeeDTO> searchEmployees(@RequestBody EmployeeSearchRequest request) {
         EmployeeSpecificationsBuilder builder = new EmployeeSpecificationsBuilder();
 
-        addSpecificationIfPresent(builder, "employeeName", EmployeeName);
-        addSpecificationIfPresent(builder, "employeeSurname", EmployeeSurname);
-        addSpecificationIfPresent(builder, "employeePhone", EmployeePhone);
-        addSpecificationIfPresent(builder, "employeeEmail", EmployeeEmail);
+        for (SpecSearchCriteria criteria : request.getSearchCriteriaList()) {
+            builder.with(criteria.getKey(), criteria.getOperation(), criteria.getValue());
+        }
 
         Specification<Employee> spec = builder.build();
-        List<Employee> employees = employeeService.getEmployees(spec);
-       List<EmployeeDTO>  employeeDTO = employeeDTOMapper.toListDTO(employees);
-        return  employeeDTOMapper.toListDTOReguest(employeeDTO);
+
+        Sort sort = Sort.by(Sort.Direction.fromString(request.getSortDirection()), request.getSortBy());
+
+        List<Employee> employees = employeeService.getEmployees(spec, sort);
+
+        List<EmployeeDTO> employeeDTOs = employeeDTOMapper.toListDTO(employees);
+
+        return employeeDTOMapper.dtoToFilter(employeeDTOs);
     }
 
-    private void addSpecificationIfPresent(EmployeeSpecificationsBuilder builder, String key, String value) {
-        if (value != null && !value.isEmpty()) {
-            builder.with(key, ":", value, null, null);
-        }
-    }
 
 
 

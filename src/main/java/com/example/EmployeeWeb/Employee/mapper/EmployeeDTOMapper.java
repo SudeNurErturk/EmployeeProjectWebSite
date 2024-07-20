@@ -126,12 +126,47 @@ public class EmployeeDTOMapper implements BaseMapper<Employee, EmployeeDTO> {
 
 
 
+    public List<FilterEmployeeDTO> dtoToFilter(List<EmployeeDTO> employeeDTOs) {
+        if (employeeDTOs == null) {
+            return null;
+        }
 
+        List<FilterEmployeeDTO> filterEmployeeDTOs = new ArrayList<>(employeeDTOs.size());
+        for (EmployeeDTO dto : employeeDTOs) {
+            filterEmployeeDTOs.add(toFilterEmployeeDTO(dto));
+        }
 
-
-
-
+        return filterEmployeeDTOs;
     }
+
+    public FilterEmployeeDTO toFilterEmployeeDTO(EmployeeDTO dto) {
+        if (dto == null) {
+            return null;
+        }
+
+        FilterEmployeeDTO filterEmployeeDTO = new FilterEmployeeDTO();
+        filterEmployeeDTO.setEmployeeName(dto.getEmployeeName());
+        filterEmployeeDTO.setEmployeeSurname(dto.getEmployeeSurname());
+        filterEmployeeDTO.setEmployeePhone(dto.getEmployeePhone());
+        filterEmployeeDTO.setEmployeeEmail(dto.getEmployeeEmail());
+        filterEmployeeDTO.setLevel(dto.getLevel());
+        filterEmployeeDTO.setBirthdate(dto.getBirthdate());
+        filterEmployeeDTO.setTeam(dto.getTeam());
+        filterEmployeeDTO.setStartingDate(dto.getStartingDate());
+        filterEmployeeDTO.setEndingDate(dto.getEndingDate());
+        filterEmployeeDTO.setWorkingPlace(dto.getWorkingPlace());
+        filterEmployeeDTO.setContractType(dto.getContractType());
+//        filterEmployeeDTO.setOtherInformation( otherInformationDTOMapper.toDTO(dto.getOtherInformation()) );
+//        filterEmployeeDTO.setPersonalInformation( personalInformationDTOMapper.toDTO( dto.getPersonalInformation()) );
+//
+
+
+
+        return filterEmployeeDTO;
+    }
+
+
+}
 
 
 
