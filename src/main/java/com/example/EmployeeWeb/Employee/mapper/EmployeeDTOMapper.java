@@ -2,6 +2,7 @@ package com.example.EmployeeWeb.Employee.mapper;
 
 import com.example.EmployeeWeb.Employee.DTO.EmployeeDTO;
 import com.example.EmployeeWeb.Employee.DTO.EmployeeDTORequest;
+import com.example.EmployeeWeb.Employee.DTO.FilterEmployeeDTO;
 import com.example.EmployeeWeb.Employee.model.Employee;
 import com.example.EmployeeWeb.OtherInfo.mapper.OtherInformationDTOMapper;
 import com.example.EmployeeWeb.PersonalInformation.mapper.PersonalInformationDTOMapper;

@@ -3,12 +3,19 @@ package com.example.EmployeeWeb.Employee.Controller;
 
 import com.example.EmployeeWeb.Employee.DTO.EmployeeDTO;
 import com.example.EmployeeWeb.Employee.DTO.EmployeeDTORequest;
+import com.example.EmployeeWeb.Employee.DTO.FilterEmployeeDTO;
+
 import com.example.EmployeeWeb.Employee.mapper.EmployeeDTOMapper;
+import com.example.EmployeeWeb.Employee.repository.EmployeeRepository;
 import com.example.EmployeeWeb.Employee.service.EmployeeService;
 import com.example.EmployeeWeb.Employee.model.Employee;
 
+import com.example.EmployeeWeb.Employee.specification.EmployeeSearchRequest;
 import com.example.EmployeeWeb.Employee.specification.EmployeeSpecificationsBuilder;
+import com.example.EmployeeWeb.Employee.specification.SearchOperation;
+import com.example.EmployeeWeb.Employee.specification.SpecSearchCriteria;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,8 +27,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 
+import java.net.URLDecoder;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Filter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 @RestController
@@ -32,9 +44,12 @@ public class EmployeeController {
     private final EmployeeService employeeService;
     private final EmployeeDTOMapper employeeDTOMapper;
 
+
     public EmployeeController(EmployeeService employeeService, EmployeeDTOMapper employeeDTOMapper) {
         this.employeeService = employeeService;
         this.employeeDTOMapper = employeeDTOMapper;
+
+
     }
 
     @GetMapping("/list")
@@ -45,11 +60,10 @@ public class EmployeeController {
         return new ResponseEntity<>(employeeDTORequests, HttpStatus.OK);
     }
 
-
+    @ResponseBody
     @PostMapping("/search")
     public List<FilterEmployeeDTO> searchEmployees(@RequestBody EmployeeSearchRequest request) {
         EmployeeSpecificationsBuilder builder = new EmployeeSpecificationsBuilder();
-
         for (SpecSearchCriteria criteria : request.getSearchCriteriaList()) {
             builder.with(criteria.getKey(), criteria.getOperation(), criteria.getValue());
         }
@@ -63,6 +77,7 @@ public class EmployeeController {
         List<EmployeeDTO> employeeDTOs = employeeDTOMapper.toListDTO(employees);
 
         return employeeDTOMapper.dtoToFilter(employeeDTOs);
+
     }
 
 
@@ -74,18 +89,7 @@ public class EmployeeController {
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createEmployee(@RequestBody EmployeeDTO employeeDTO) {
         try {
-            /*
-            System.out.println(employeeDTO.getId());
-            System.out.println("DTO: " + employeeDTO);
 
-            Employee employee01 = new Employee();
-            employee01.setEmployeeName(employeeDTO.getEmployeeName());
-            employee01.setEmployeeEmail(employeeDTO.getEmployeeEmail());
-            employee01.setId(employeeDTO.getId());
-
-            System.out.println("Manuel Entity: " + employee01.toString());
-*/
-            // Employee savedEmployee = employeeService.saveEmployee(employee);
             Employee employee = employeeDTOMapper.toEntity(employeeDTO);
             System.out.println("Entity: " + employee.toString());
             Employee savedEmployee = employeeService.saveEmployee(employee);
@@ -102,16 +106,12 @@ public class EmployeeController {
         try {
             Optional<Employee> existingEmployee = employeeService.getEmployeeById(id);
             if (existingEmployee.isPresent()) {
-                employeeDTO.setId(id);
-               Employee employee1= employeeDTOMapper.toEntity(employeeDTO);
-             //   employeeMapper.toEntity(employeeDTO);
-//                employee.setId(id);
-//                employee.setEmployeeEmail(employee.getEmployeeEmail());// Ensure the ID remains the same
-                Employee updatedEmployee = employeeService.updateEmployee(employee1);
-                System.out.println("Güncellenmiş Employee: " + employee1);
-//                EmployeeDTORequest employeeDTORequest = employeeMapper.toDTORequest(updatedEmployee);
-                System.out.println("Güncellenmiş Employee: " + updatedEmployee);
-                return ResponseEntity.ok(updatedEmployee);
+               employeeDTO.setId(id);
+
+                Employee employee = employeeDTOMapper.toEntity(employeeDTO);
+                Employee updatedEmployee = employeeService.updateEmployee(employee);
+                return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
+
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Employee not found");
             }

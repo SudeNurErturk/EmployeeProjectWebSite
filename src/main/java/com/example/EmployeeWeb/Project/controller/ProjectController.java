@@ -63,18 +63,21 @@ public class ProjectController {
         try {
             Optional<Project> existingProject = projectService.getProjectById(projectId);
             if (existingProject.isPresent()) {
-                Project project =  projectDTOMapper.toEntity(projectDto);
 
-                //  project.setProjectId(projectId); // Ensure the ID remains the same
-                project.setProjectId(projectId);
-                project.setProjectName(project.getProjectName());
-                Project updatedProject = projectService.saveProject(project);
+                projectDto.setProjectId(projectId);
+                // project.setProjectName(project.getProjectName());
+                Project project = projectDTOMapper.toEntity(projectDto);
+                Project updatedProject = projectService.updateProject(project);
 //                ProjectDtoRequest projectDtoRequest = projectMapper.toDtoRequest(updatedProject);
-                return ResponseEntity.ok(updatedProject);
+                return new ResponseEntity<>(updatedProject, HttpStatus.OK);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Project not found");
             }
-        }  catch (Exception e) {
+        }
+            catch (RuntimeException e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            }
+          catch (Exception e) {
             throw new RuntimeException(e);
         }
 

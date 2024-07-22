@@ -1,6 +1,7 @@
 package com.example.EmployeeWeb.Employee.specification;
 
 import com.example.EmployeeWeb.Employee.DTO.EmployeeDTO;
+import com.example.EmployeeWeb.Employee.DTO.FilterEmployeeDTO;
 import com.example.EmployeeWeb.Employee.model.Employee;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -10,7 +11,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 
 
-public class EmployeeSpecification implements Specification<EmployeeDTO> {
+public class EmployeeSpecification implements Specification<Employee> {
     private SpecSearchCriteria criteria;
 
 
@@ -19,7 +20,7 @@ public class EmployeeSpecification implements Specification<EmployeeDTO> {
         this.criteria = criteria;
     }
 
-    public Predicate toPredicate(Root<EmployeeDTO> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
+    public Predicate toPredicate(Root<Employee> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
         switch (criteria.getOperation()) {
             case EQUALITY:
                 return builder.equal(root.get(criteria.getKey()), criteria.getValue());

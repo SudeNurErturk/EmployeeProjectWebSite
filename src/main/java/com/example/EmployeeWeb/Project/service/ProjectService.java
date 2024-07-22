@@ -1,10 +1,13 @@
 package com.example.EmployeeWeb.Project.service;
 
+import com.example.EmployeeWeb.Project.DTO.ProjectDTO;
 import com.example.EmployeeWeb.Project.mapper.ProjectDTOMapper;
 import com.example.EmployeeWeb.Project.model.Project;
 import com.example.EmployeeWeb.Project.repository.ProjectRepository;
+import com.example.EmployeeWeb.Project.validation.ProjectValidation;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import jakarta.validation.ValidationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,11 +19,14 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final ProjectDTOMapper projectDTOMapper;
+    private final ProjectValidation projectValidation;
 
-    public ProjectService(ProjectRepository projectRepository, ProjectDTOMapper projectDTOMapper) {
+    public ProjectService(ProjectRepository projectRepository, ProjectDTOMapper projectDTOMapper, ProjectValidation projectValidation) {
         this.projectRepository = projectRepository;
         this.projectDTOMapper = projectDTOMapper;
+        this.projectValidation = projectValidation;
     }
+
     @Transactional
     public List<Project> findAll() {
         return projectRepository.findAll();
@@ -43,8 +49,6 @@ public class ProjectService {
     }
 
 
-
-
     @Transactional
     public Optional<Project> getProjectById(Long id) {
         return projectRepository.findByProjectId(id);
@@ -53,12 +57,13 @@ public class ProjectService {
 
     @Transactional
     public Project saveProject(Project project) throws Exception {
-        Optional<Project> existingProject = projectRepository.findByProjectName(project.getProjectName());
-        if (existingProject.isPresent() ) {
-            throw new Exception("Project already exists");
-        }
-        //Project project = ProjectMapper.INSTANCE.toEntity(projectDTO);
+//        Optional<Project> existingProject = projectRepository.findByProjectName(project.getProjectName());
+//        if (existingProject.isPresent() ) {
+//            throw new Exception("Project already exists");
+//        }
 
+        ProjectDTO projectDTO = projectDTOMapper.toDTO(project);
+        projectValidation.validateProject(projectDTO);
         return projectRepository.save(project);
     }
 
@@ -73,4 +78,19 @@ public class ProjectService {
         }
     }
 
+    @Transactional
+    public Project updateProject(Project project) throws Exception {
+        Project existingProject = projectRepository.findById(project.getProjectId())
+                .orElseThrow(() -> new Exception("Project not found"));
+        ProjectDTO projectDTO = projectDTOMapper.toDTO(project);
+
+
+        boolean isProjectNameChanged = !existingProject.getProjectName().equals(projectDTO.getProjectName());
+
+        if (isProjectNameChanged) {
+           throw  new ValidationException("You cannot change project name.");
+        }
+   // Project project= projectDTOMapper.toEntity(project);
+    return projectRepository.saveAndFlush(project);
+    }
 }
