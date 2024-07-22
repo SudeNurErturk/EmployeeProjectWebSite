@@ -23,21 +23,20 @@ import java.util.Date;
 public class FilterEmployeeDTO {
 
 
-    @JsonProperty(value="employeeName")
-
+    @JsonProperty(value="name")
     private String employeeName;
 
 
-    @JsonProperty(value="employeeSurname")
+    @JsonProperty(value="surname")
     private String employeeSurname;
 
 
 
-    @JsonProperty(value="employeeEmail")
+    @JsonProperty(value="email")
     private String employeeEmail;
 
 
-    @JsonProperty(value="employeePhone")
+    @JsonProperty(value="phone")
 
     private String employeePhone;
 
@@ -77,6 +76,22 @@ public class FilterEmployeeDTO {
     @JsonProperty(value="contractType")
     private Enum.ContractType contractType;
 
-
-
+    @Override
+    public String toString() {
+        return "FilterEmployeeDTO{" +
+                "birthdate=" + birthdate +
+                ", employeeName='" + employeeName + '\'' +
+                ", employeeSurname='" + employeeSurname + '\'' +
+                ", employeeEmail='" + employeeEmail + '\'' +
+                ", employeePhone='" + employeePhone + '\'' +
+                ", level=" + level +
+                ", otherInformation=" + otherInformation +
+                ", personalInformation=" + personalInformation +
+                ", team=" + team +
+                ", startingDate=" + startingDate +
+                ", endingDate=" + endingDate +
+                ", workingPlace=" + workingPlace +
+                ", contractType=" + contractType +
+                '}';
+    }
 }

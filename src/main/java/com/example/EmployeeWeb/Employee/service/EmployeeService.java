@@ -1,6 +1,7 @@
 package com.example.EmployeeWeb.Employee.service;
 
 import com.example.EmployeeWeb.Employee.DTO.EmployeeDTO;
+import com.example.EmployeeWeb.Employee.DTO.EmployeeDTORequest;
 import com.example.EmployeeWeb.Employee.mapper.EmployeeDTOMapper;
 import com.example.EmployeeWeb.Employee.model.Employee;
 import com.example.EmployeeWeb.Employee.repository.EmployeeRepository;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @AllArgsConstructor
@@ -131,6 +133,9 @@ public class EmployeeService {
     }
 
 
-
-
+    public List<EmployeeDTORequest> convertToDTORequestList(List<Employee> employees) {
+        List<EmployeeDTO> employeeDTO = employeeDTOMapper.toListDTO(employees);
+      //  List<EmployeeDTORequest> employeeDTORequests = employeeDTOMapper.toListDTOReguest(employeeDTO)
+;        return employeeDTOMapper.toListDTOReguest(employeeDTO);
+    }
 }

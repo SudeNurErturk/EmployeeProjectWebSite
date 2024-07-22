@@ -5,6 +5,7 @@ import com.example.EmployeeWeb.OtherInfo.model.OtherInformation;
 import com.example.EmployeeWeb.PersonalInformation.model.PersonalInformation;
 import com.example.EmployeeWeb.Project.model.Project;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -32,6 +33,7 @@ public class Employee  {
 
 
     @Column(name = "NAME")
+    @JsonProperty(value = "name")
     private String employeeName;
 
     @Column(name = "SURNAME")
