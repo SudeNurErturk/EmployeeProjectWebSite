@@ -94,42 +94,8 @@ public class EmployeeController {
     @ResponseBody
     @PostMapping("/filter")
     public List<EmployeeDTORequest> filterEmployees(@RequestBody EmployeeFilterRequest filterRequest) {
-        EmployeeSpecificationsBuilder builder = new EmployeeSpecificationsBuilder();
-System.out.println(filterRequest.getEmployee().toString());
-        for (FilterEmployeeDTO dto : filterRequest.getEmployee()) {
-            if (dto.getEmployeeName() != null) {
-                builder.with("employeeName", SearchOperation.getSimpleOperation(':'), dto.getEmployeeName());
-            }
-            if (dto.getEmployeeSurname() != null) {
-                builder.with("EmployeeSurname",  SearchOperation.getSimpleOperation(':'), dto.getEmployeeSurname());
-            }
-            if (dto.getEmployeePhone() != null) {
-                builder.with("EmployeePhone",   SearchOperation.getSimpleOperation(':'), dto.getEmployeePhone());
-            }
-            if (dto.getEmployeeEmail() != null) {
-                builder.with("EmployeeEmail",   SearchOperation.getSimpleOperation(':'), dto.getEmployeeEmail());
-            }
-            if(dto.getContractType()!= null) {
-                builder.with("contractYype", SearchOperation.getSimpleOperation(':'), dto.getContractType());
-            }
-            if(dto.getEndingDate()!= null) {
-                builder.with("endingDate" ,SearchOperation.getSimpleOperation(':'), dto.getEndingDate());
-            }
-            if(dto.getStartingDate()!= null) {
-                builder.with("startingDate", SearchOperation.getSimpleOperation(':'), dto.getStartingDate());
-            }
-            if(dto.getLevel()!= null) {
-                builder.with("level", SearchOperation.getSimpleOperation(':'), dto.getLevel());
-            }
-            if(dto.getTeam()!= null) {
-                builder.with("team",   SearchOperation.getSimpleOperation(':'), dto.getTeam());
-            }
-        }
 
-
-
-
-        Specification<Employee> spec = builder.build();
+        Specification<Employee> spec = EmployeeSpecification.buildSpecifications(filterRequest.getEmployee());
 
         String sortBy = filterRequest.getSortBy() != null ? filterRequest.getSortBy() : "id";
         Sort.Direction sortDirection = "DESC".equalsIgnoreCase(filterRequest.getSortDirection()) ? Sort.Direction.DESC : Sort.Direction.ASC;
@@ -138,6 +104,16 @@ System.out.println(filterRequest.getEmployee().toString());
         List<Employee> employees = employeeService.getEmployees(spec, sort);
         return employeeService.convertToDTORequestList(employees);
     }
+
+//        EmployeeSpecificationsBuilder builder = new EmployeeSpecificationsBuilder();
+//        employeeSpecification.buildSpecifications(builder,filterRequest);
+//        Specification<Employee> spec = builder.build();
+//        String sortBy = filterRequest.getSortBy() != null ? filterRequest.getSortBy() : "id";
+//        Sort.Direction sortDirection = "DESC".equalsIgnoreCase(filterRequest.getSortDirection()) ? Sort.Direction.DESC : Sort.Direction.ASC;
+//        Sort sort = Sort.by(sortDirection, sortBy);
+//        List<Employee> employees = employeeService.getEmployees(spec, sort);
+//        return employeeService.convertToDTORequestList(employees);
+
 
 
 

@@ -23,4 +23,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> , JpaS
     boolean findByEmployeePhone(@Param("employeePhone")String employeePhone);
     Optional<Employee> findById(Long id);
 
+
+    @Query("SELECT CONCAT(e.employeeName, ' ', e.employeeSurname) AS fullName FROM Employee e")
+    List<EmployeeProjection> findEmployeeFullNames();
+
 }
