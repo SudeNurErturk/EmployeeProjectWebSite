@@ -1,6 +1,7 @@
 package com.example.EmployeeWeb.Employee.repository;
 
 import com.example.EmployeeWeb.Employee.model.Employee;
+import com.example.EmployeeWeb.Employee.projection.EmployeeProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;

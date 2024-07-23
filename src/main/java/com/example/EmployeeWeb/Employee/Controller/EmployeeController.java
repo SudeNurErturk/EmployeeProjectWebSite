@@ -6,6 +6,8 @@ import com.example.EmployeeWeb.Employee.DTO.EmployeeDTORequest;
 import com.example.EmployeeWeb.Employee.DTO.FilterEmployeeDTO;
 
 import com.example.EmployeeWeb.Employee.mapper.EmployeeDTOMapper;
+import com.example.EmployeeWeb.Employee.projection.EmployeeProjection;
+import com.example.EmployeeWeb.Employee.projection.EmployeeProjectionService;
 import com.example.EmployeeWeb.Employee.repository.EmployeeRepository;
 import com.example.EmployeeWeb.Employee.service.EmployeeService;
 import com.example.EmployeeWeb.Employee.model.Employee;
@@ -34,19 +36,22 @@ import java.util.regex.Pattern;
 
 
 @RestController
-@RequestMapping("/employee")
+@RequestMapping("/employees")
 public class EmployeeController {
 
 
     private final EmployeeService employeeService;
     private final EmployeeDTOMapper employeeDTOMapper;
+    private final EmployeeProjectionService employeeProjectionService;
 
 
-    public EmployeeController(EmployeeService employeeService, EmployeeDTOMapper employeeDTOMapper) {
+
+
+    public EmployeeController(EmployeeService employeeService, EmployeeDTOMapper employeeDTOMapper, EmployeeProjectionService employeeProjectionService) {
         this.employeeService = employeeService;
         this.employeeDTOMapper = employeeDTOMapper;
 
-
+        this.employeeProjectionService = employeeProjectionService;
     }
 
     @GetMapping("/list")
@@ -56,6 +61,14 @@ public class EmployeeController {
         List<EmployeeDTORequest> employeeDTORequests = employeeDTOMapper.toListDTOReguest(employeeDTO);
         return new ResponseEntity<>(employeeDTORequests, HttpStatus.OK);
     }
+
+
+    @GetMapping("/fullNames")
+    public List<EmployeeProjection> getEmployeeFullNames() {
+        List<EmployeeProjection> employeeProjection = employeeProjectionService.getEmployeeFullNames();
+        return employeeProjection;
+    }
+
 
 //    @ResponseBody
 //    @PostMapping("/search")
@@ -121,7 +134,7 @@ public class EmployeeController {
 //API tarafından HTTP yanıtlarını daha kolay takibi sağlar)
 
     @ResponseBody
-    @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/create",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createEmployee(@RequestBody EmployeeDTO employeeDTO) {
         try {
 
@@ -155,6 +168,7 @@ public class EmployeeController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
 
     }
 
