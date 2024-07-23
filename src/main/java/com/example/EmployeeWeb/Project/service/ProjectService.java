@@ -32,14 +32,8 @@ public class ProjectService {
         return projectRepository.findAll();
     }
 
-//    public List<ProjectDtoRequest> getAllProjects() {
-//
-//        return projectRepository.findAll().stream()
-//                .map(projectMapper::toDtoRequest)
-//                .collect(Collectors.toList());
-//
-//
-//    }
+
+
 
     public Project getProjectByIdAsDTO(Long id) {
         return projectRepository.findByProjectId(id)
@@ -57,11 +51,6 @@ public class ProjectService {
 
     @Transactional
     public Project saveProject(Project project) throws Exception {
-//        Optional<Project> existingProject = projectRepository.findByProjectName(project.getProjectName());
-//        if (existingProject.isPresent() ) {
-//            throw new Exception("Project already exists");
-//        }
-
         ProjectDTO projectDTO = projectDTOMapper.toDTO(project);
         projectValidation.validateProject(projectDTO);
         return projectRepository.save(project);

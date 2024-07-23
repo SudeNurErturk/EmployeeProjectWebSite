@@ -26,13 +26,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 
-import java.net.URLDecoder;
-import java.util.Arrays;
+
+
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Filter;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 
 @RestController
@@ -45,8 +43,6 @@ public class EmployeeController {
     private final EmployeeProjectionService employeeProjectionService;
 
 
-
-
     public EmployeeController(EmployeeService employeeService, EmployeeDTOMapper employeeDTOMapper, EmployeeProjectionService employeeProjectionService) {
         this.employeeService = employeeService;
         this.employeeDTOMapper = employeeDTOMapper;
@@ -57,7 +53,7 @@ public class EmployeeController {
     @GetMapping("/list")
     public ResponseEntity getAllEmployees() {
         List<Employee> employees = employeeService.findAll();
-        List<EmployeeDTO> employeeDTO= employeeDTOMapper.toListDTO(employees);
+        List<EmployeeDTO> employeeDTO = employeeDTOMapper.toListDTO(employees);
         List<EmployeeDTORequest> employeeDTORequests = employeeDTOMapper.toListDTOReguest(employeeDTO);
         return new ResponseEntity<>(employeeDTORequests, HttpStatus.OK);
     }
@@ -69,40 +65,6 @@ public class EmployeeController {
         return employeeProjection;
     }
 
-
-//    @ResponseBody
-//    @PostMapping("/search")
-
-//
-//    public List<FilterEmployeeDTO> searchEmployees(@RequestParam String search) {
-//        EmployeeSpecificationsBuilder builder = new EmployeeSpecificationsBuilder();
-//        String[] split = URLDecoder.decode(search).split(":");
-//        for (String s : split) {
-//            System.out.println(s);
-//
-//        }
-//        return null;
-//    }
-
-
-
-//    public List<FilterEmployeeDTO> searchEmployees(@RequestBody EmployeeSearchRequest request) {
-//        EmployeeSpecificationsBuilder builder = new EmployeeSpecificationsBuilder();
-//        for (SpecSearchCriteria criteria : request.getSearchCriteriaList()) {
-//            builder.with(criteria.getKey(), criteria.getOperation(), criteria.getValue());
-//        }
-//
-//        Specification<Employee> spec = builder.build();
-//
-//        Sort sort = Sort.by(Sort.Direction.fromString(request.getSortDirection()), request.getSortBy());
-//
-//        List<Employee> employees = employeeService.getEmployees(spec, sort);
-//
-//        List<EmployeeDTO> employeeDTOs = employeeDTOMapper.toListDTO(employees);
-//
-//        return employeeDTOMapper.dtoToFilter(employeeDTOs);
-//
-//    }
 
     @ResponseBody
     @PostMapping("/filter")
@@ -118,23 +80,9 @@ public class EmployeeController {
         return employeeService.convertToDTORequestList(employees);
     }
 
-//        EmployeeSpecificationsBuilder builder = new EmployeeSpecificationsBuilder();
-//        employeeSpecification.buildSpecifications(builder,filterRequest);
-//        Specification<Employee> spec = builder.build();
-//        String sortBy = filterRequest.getSortBy() != null ? filterRequest.getSortBy() : "id";
-//        Sort.Direction sortDirection = "DESC".equalsIgnoreCase(filterRequest.getSortDirection()) ? Sort.Direction.DESC : Sort.Direction.ASC;
-//        Sort sort = Sort.by(sortDirection, sortBy);
-//        List<Employee> employees = employeeService.getEmployees(spec, sort);
-//        return employeeService.convertToDTORequestList(employees);
-
-
-
-
-
-//API tarafından HTTP yanıtlarını daha kolay takibi sağlar)
 
     @ResponseBody
-    @RequestMapping(value = "/create",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/create", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createEmployee(@RequestBody EmployeeDTO employeeDTO) {
         try {
 
@@ -154,7 +102,7 @@ public class EmployeeController {
         try {
             Optional<Employee> existingEmployee = employeeService.getEmployeeById(id);
             if (existingEmployee.isPresent()) {
-               employeeDTO.setId(id);
+                employeeDTO.setId(id);
 
                 Employee employee = employeeDTOMapper.toEntity(employeeDTO);
                 Employee updatedEmployee = employeeService.updateEmployee(employee);

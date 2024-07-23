@@ -10,11 +10,6 @@ public class PersonalInfoDTORequest {
 
 
     private Long id;
-
-
-
-
-
     private Date birthDate;
 
 

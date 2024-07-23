@@ -25,11 +25,8 @@ public class PersonalInformation {
     @SequenceGenerator(name = "GEN_PERSONALINFO", sequenceName = "SEQ_PERSONALINFO", allocationSize = 1)
     @GeneratedValue(generator = "GEN_PERSONALINFO", strategy = GenerationType.SEQUENCE )
     private Long id;
-    /*
-        @Column(unique = true)
-        private Long personalId;
 
-    */
+
     private Date birthdate;
 
 
