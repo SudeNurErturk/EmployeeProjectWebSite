@@ -64,6 +64,10 @@ public class EmployeeController {
         List<EmployeeProjection> employeeProjection = employeeProjectionService.getEmployeeFullNames();
         return employeeProjection;
     }
+    @GetMapping("/listEmployee")
+    public List<EmployeeProjection> getAllEmployeeProjections() {
+        return employeeProjectionService.getAllEmployeeProjections();
+    }
 
 
     @ResponseBody

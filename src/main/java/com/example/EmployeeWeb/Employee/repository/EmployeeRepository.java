@@ -27,5 +27,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> , JpaS
 
     @Query("SELECT CONCAT(e.employeeName, ' ', e.employeeSurname) AS fullName FROM Employee e")
     List<EmployeeProjection> findEmployeeFullNames();
+    @Query("SELECT e FROM Employee e")
+    List<EmployeeProjection> findAllEmployees();
 
 }

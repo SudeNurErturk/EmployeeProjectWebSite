@@ -18,4 +18,7 @@ public class EmployeeProjectionService {
     public List<EmployeeProjection> getEmployeeFullNames() {
         return employeeRepository.findEmployeeFullNames();
     }
+    public List<EmployeeProjection> getAllEmployeeProjections() {
+        return employeeRepository.findAllEmployees();
+    }
 }
