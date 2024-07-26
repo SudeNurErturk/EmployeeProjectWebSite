@@ -78,10 +78,9 @@ public class EmployeeService {
         boolean isPhoneChanged = !existingEmployee.getEmployeePhone().equals(employeeDTO.getEmployeePhone());
         boolean isEmailChanged = !existingEmployee.getEmployeeEmail().equals(employeeDTO.getEmployeeEmail());
 
-        if (isPhoneChanged) {
-
-            throw new ValidationException("You cannot change the employee phone number.");
-        }
+            if (isPhoneChanged || isEmailChanged) {
+                throw new ValidationException("You cannot change the employee email or phone number.");
+            }
 
         if (isEmailChanged) {
             throw new ValidationException("You cannot change the employee email.");

@@ -20,6 +20,8 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "EMPLOYEES")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Employee  {
 
     @Serial
