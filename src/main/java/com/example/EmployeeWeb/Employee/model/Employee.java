@@ -35,7 +35,7 @@ public class Employee  {
 
 
     @Column(name = "NAME")
-    @JsonProperty(value = "name")
+
     private String employeeName;
 
     @Column(name = "SURNAME")
@@ -89,6 +89,12 @@ public class Employee  {
     )
 
     private Set<Project> projects;
+
+//
+//    @ElementCollection
+//    @CollectionTable(name = "manager_employees", joinColumns = @JoinColumn(name = "employee_id"))
+//    @Column(name = "manager_id")
+//    private Set<Long> managerIds; // Sadece Employee ID'leri tutan set
 
 }
 

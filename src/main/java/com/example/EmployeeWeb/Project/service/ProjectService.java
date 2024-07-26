@@ -57,7 +57,7 @@ public class ProjectService {
     }
 
     @Transactional
-    public void deleteProjectById(Long projectId) {
+    public void deleteProjectById(Long projectId) throws Exception {
         Optional<Project> projectOptional = projectRepository.findByProjectId(projectId);
         if (projectOptional.isPresent()) {
             Project project = projectOptional.get();

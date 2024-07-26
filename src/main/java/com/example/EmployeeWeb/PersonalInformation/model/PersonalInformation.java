@@ -45,7 +45,7 @@ public class PersonalInformation {
     @Column(name = "Marital Status")
     private String maritalStatus;
 
-    @OneToOne(mappedBy = "personalInformation")
-
-    private Employee employee;
+//    @OneToOne(mappedBy = "personalInformation")
+//
+//    private Employee employee;
 }

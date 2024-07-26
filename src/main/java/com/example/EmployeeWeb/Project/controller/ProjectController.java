@@ -77,7 +77,7 @@ public class ProjectController {
 
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteProject(@PathVariable Long id) {
+    public ResponseEntity<?> deleteProject(@PathVariable Long id) throws Exception {
 
         try {
             Optional<Project> existingProject = projectService.getProjectById(id);

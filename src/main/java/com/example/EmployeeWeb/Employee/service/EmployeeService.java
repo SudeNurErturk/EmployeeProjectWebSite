@@ -7,19 +7,22 @@ import com.example.EmployeeWeb.Employee.model.Employee;
 import com.example.EmployeeWeb.Employee.repository.EmployeeRepository;
 
 import com.example.EmployeeWeb.Employee.validation.EmployeeValidation;
+import com.example.EmployeeWeb.OtherInfo.mapper.OtherInformationDTOMapper;
 import com.example.EmployeeWeb.OtherInfo.repository.OtherInfoRepository;
+import com.example.EmployeeWeb.PersonalInformation.mapper.PersonalInformationDTOMapper;
 import com.example.EmployeeWeb.PersonalInformation.repository.PersonalInfoRepository;
+import com.example.EmployeeWeb.exception.GlobalExceptionHandler;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
+
 import jakarta.validation.ValidationException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @AllArgsConstructor
@@ -31,6 +34,9 @@ public class EmployeeService {
     private final PersonalInfoRepository personalInformationRepository;
     private final EmployeeValidation employeeValidation;
     private final EmployeeDTOMapper employeeDTOMapper;
+    private final OtherInformationDTOMapper otherInformationDTOMapper;
+    private final PersonalInformationDTOMapper personalInformationDTOMapper;
+    private final GlobalExceptionHandler globalExceptionHandler;
 
 
     @Transactional
@@ -43,50 +49,49 @@ public class EmployeeService {
     }
 
 
-    public Optional<Employee> getEmployeeByEmployeeId(Long employeeId) {
-        return employeeRepository.findById(employeeId);
+    public Employee getEmployeeByEmployeeId(Long employeeId) {
+        return employeeRepository.findForEmployeeId(employeeId);
     }
 
 
-    @Transactional
+
     public Optional<Employee> getEmployeeById(Long id) {
         return employeeRepository.findById(id);
     }
 
     @Transactional
-    public Employee saveEmployee(Employee employee) throws Exception {
+    public Employee saveEmployee(Employee employee) throws EntityNotFoundException {
         EmployeeDTO employeeDTO = employeeDTOMapper.toDTO(employee);
-
         employeeValidation.validateEmployee(employeeDTO);
-
-        if (employee.getOtherInformation() != null) {
+        if (!employeeValidation.isEmailExists(employee.getEmployeeEmail()) && !employeeValidation.isPhoneExists(employee.getEmployeePhone()) && employee.getOtherInformation() != null) {
             otherInformationRepository.save(employee.getOtherInformation());
         }
-        if (employee.getPersonalInformation() != null) {
+        if (!employeeValidation.isEmailExists(employee.getEmployeeEmail()) && !employeeValidation.isPhoneExists(employee.getEmployeePhone()) && employee.getPersonalInformation() != null) {
             personalInformationRepository.save(employee.getPersonalInformation());
         }
         return employeeRepository.save(employee);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Employee updateEmployee(Employee employee) throws Exception {
 
-        Employee existingEmployee = employeeRepository.findById(employee.getId()).orElseThrow(() -> new Exception("Employee not found"));
-
-
-        EmployeeDTO employeeDTO = employeeDTOMapper.toDTO(employee);
-        boolean isPhoneChanged = !existingEmployee.getEmployeePhone().equals(employeeDTO.getEmployeePhone());
-        boolean isEmailChanged = !existingEmployee.getEmployeeEmail().equals(employeeDTO.getEmployeeEmail());
+        Employee existingEmployee = employeeRepository.findForEmployeeId(employee.getId());
+        if (existingEmployee != null) {
+            EmployeeDTO employeeDTO = employeeDTOMapper.toDTO(employee);
+            boolean isPhoneChanged = !existingEmployee.getEmployeePhone().equals(employeeDTO.getEmployeePhone());
+            boolean isEmailChanged = !existingEmployee.getEmployeeEmail().equals(employeeDTO.getEmployeeEmail());
 
             if (isPhoneChanged || isEmailChanged) {
                 throw new ValidationException("You cannot change the employee email or phone number.");
             }
 
-        if (isEmailChanged) {
-            throw new ValidationException("You cannot change the employee email.");
-        }
+            if (isEmailChanged) {
+                throw new ValidationException("You cannot change the employee email.");
+            }
 
-        return employeeRepository.saveAndFlush(employee);
+
+        }
+        return employeeRepository.save(employee);
     }
 
 
@@ -109,7 +114,7 @@ public class EmployeeService {
         }
     }
 
-
+   @Transactional
     public List<EmployeeDTORequest> convertToDTORequestList(List<Employee> employees) {
         List<EmployeeDTO> employeeDTO = employeeDTOMapper.toListDTO(employees);
         return employeeDTOMapper.toListDTOReguest(employeeDTO);

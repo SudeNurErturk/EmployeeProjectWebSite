@@ -6,6 +6,8 @@ import com.example.EmployeeWeb.Employee.DTO.EmployeeDTORequest;
 import com.example.EmployeeWeb.Employee.DTO.FilterEmployeeDTO;
 
 import com.example.EmployeeWeb.Employee.mapper.EmployeeDTOMapper;
+import com.example.EmployeeWeb.Employee.model.Enum;
+import com.example.EmployeeWeb.Employee.model.Level;
 import com.example.EmployeeWeb.Employee.projection.EmployeeProjection;
 import com.example.EmployeeWeb.Employee.projection.EmployeeProjectionService;
 import com.example.EmployeeWeb.Employee.repository.EmployeeRepository;
@@ -13,6 +15,12 @@ import com.example.EmployeeWeb.Employee.service.EmployeeService;
 import com.example.EmployeeWeb.Employee.model.Employee;
 
 import com.example.EmployeeWeb.Employee.specification.*;
+import com.example.EmployeeWeb.OtherInfo.DTO.OtherInformationDTO;
+import com.example.EmployeeWeb.OtherInfo.model.OtherInformation;
+import com.example.EmployeeWeb.PersonalInformation.DTO.PersonalInformationDTO;
+import com.example.EmployeeWeb.PersonalInformation.model.PersonalInformation;
+import com.example.EmployeeWeb.Project.DTO.ProjectDTO;
+import com.example.EmployeeWeb.Project.model.Project;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
@@ -41,13 +49,15 @@ public class EmployeeController {
     private final EmployeeService employeeService;
     private final EmployeeDTOMapper employeeDTOMapper;
     private final EmployeeProjectionService employeeProjectionService;
+    private final EmployeeRepository employeeRepository;
 
 
-    public EmployeeController(EmployeeService employeeService, EmployeeDTOMapper employeeDTOMapper, EmployeeProjectionService employeeProjectionService) {
+    public EmployeeController(EmployeeService employeeService, EmployeeDTOMapper employeeDTOMapper, EmployeeProjectionService employeeProjectionService, EmployeeRepository employeeRepository) {
         this.employeeService = employeeService;
         this.employeeDTOMapper = employeeDTOMapper;
 
         this.employeeProjectionService = employeeProjectionService;
+        this.employeeRepository = employeeRepository;
     }
 
     @GetMapping("/list")
@@ -75,7 +85,6 @@ public class EmployeeController {
     public List<EmployeeDTORequest> filterEmployees(@RequestBody EmployeeFilterRequest filterRequest) {
 
         Specification<Employee> spec = EmployeeSpecification.buildSpecifications(filterRequest.getEmployee());
-
         String sortBy = filterRequest.getSortBy() != null ? filterRequest.getSortBy() : "id";
         Sort.Direction sortDirection = "DESC".equalsIgnoreCase(filterRequest.getSortDirection()) ? Sort.Direction.DESC : Sort.Direction.ASC;
         Sort sort = Sort.by(sortDirection, sortBy);
@@ -88,56 +97,110 @@ public class EmployeeController {
     @ResponseBody
     @RequestMapping(value = "/create", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createEmployee(@RequestBody EmployeeDTO employeeDTO) {
-        try {
 
             Employee employee = employeeDTOMapper.toEntity(employeeDTO);
             System.out.println("Entity: " + employee.toString());
             Employee savedEmployee = employeeService.saveEmployee(employee);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedEmployee);
             // return ResponseEntity.status(HttpStatus.CREATED).body(null);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+
     }
 
 
     @PutMapping(value = "/update/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateEmployee(@PathVariable Long id, @Valid @RequestBody EmployeeDTO employeeDTO) {
-        try {
-            Optional<Employee> existingEmployee = employeeService.getEmployeeById(id);
-            if (existingEmployee.isPresent()) {
-                employeeDTO.setId(id);
+    public EmployeeDTO updateEmployee(@PathVariable Long id, @Valid @RequestBody EmployeeDTO employeeDTO) throws  Exception {
 
-                Employee employee = employeeDTOMapper.toEntity(employeeDTO);
-                Employee updatedEmployee = employeeService.updateEmployee(employee);
-                return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
+//        Employee existingEmployee = employeeRepository.findForEmployeeId(id);
+//            if (existingEmployee !=null) {
+//               employeeDTO.setId(existingEmployee.getId());
 
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Employee not found");
-            }
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+//             employeeDTO.getOtherInformation().setId(existingEmployee.getId());
+//           employeeDTO.getPersonalInformation().setId(existingEmployee.getPersonalInformation().getId());
+
+                    Employee existingEmployee = employeeRepository.findById(id)
+                            .orElseThrow(() -> new IllegalArgumentException("Employee not found"));
+
+                   //validateUniqueFieldsForUpdate(employeeDTO, existingEmployee);
+                    existingEmployee.setEmployeeName(employeeDTO.getEmployeeName());
+                    existingEmployee.setEmployeeSurname(employeeDTO.getEmployeeSurname());
+
+
+
+                    existingEmployee.setLevel(Level.valueOf(String.valueOf(employeeDTO.getLevel())));
+                    existingEmployee.setEmployeePhone(employeeDTO.getEmployeePhone());
+                    existingEmployee.setEmployeeEmail(employeeDTO.getEmployeeEmail());
+                    existingEmployee.setBirthdate(employeeDTO.getBirthdate());
+                    existingEmployee.setWorkingPlace(Enum.WorkingPlace.valueOf(String.valueOf(employeeDTO.getWorkingPlace())));
+                    existingEmployee.setContractType(Enum.ContractType.valueOf(String.valueOf(employeeDTO.getContractType())));
+                    existingEmployee.setTeam(Enum.Team.valueOf(String.valueOf(employeeDTO.getTeam())));
+                    existingEmployee.setStartingDate(employeeDTO.getStartingDate());
+                    existingEmployee.setEndingDate(employeeDTO.getEndingDate());
+
+
+                    if (existingEmployee.getPersonalInformation() == null) {
+                        existingEmployee.setPersonalInformation(new PersonalInformation());
+                    }
+                    PersonalInformationDTO personalInfoDTO = employeeDTO.getPersonalInformation();
+                    existingEmployee.getPersonalInformation().setBirthdate(personalInfoDTO.getBirthdate());
+                    existingEmployee.getPersonalInformation().setPersonalSocialSecurityNumber(personalInfoDTO.getPersonalSocialSecurityNumber());
+                    existingEmployee.getPersonalInformation().setMilitaryService(personalInfoDTO.getMilitaryService());
+                    existingEmployee.getPersonalInformation().setGender((personalInfoDTO.getGender()));
+                    existingEmployee.getPersonalInformation().setMaritalStatus(personalInfoDTO.getMaritalStatus());
+
+
+                    if (existingEmployee.getOtherInformation() == null) {
+                        existingEmployee.setOtherInformation(new OtherInformation());
+                    }
+                    OtherInformationDTO otherInfoDTO = employeeDTO.getOtherInformation();
+                    existingEmployee.getOtherInformation().setAddress(otherInfoDTO.getAddress());
+                    existingEmployee.getOtherInformation().setBank(otherInfoDTO.getBank());
+                    existingEmployee.getOtherInformation().setIban(otherInfoDTO.getIban());
+                    existingEmployee.getOtherInformation().setEmergencyPersonName(otherInfoDTO.getEmergencyPersonName());
+                    existingEmployee.getOtherInformation().setEmergencyPersonPhone(otherInfoDTO.getEmergencyPersonPhone());
+
+
+//                    List<ProjectDTO> projects = employeeDTO.g();
+//                    if (projects != null) {
+//                        List<Project> updatedProjects = projects.stream()
+//                                .map(proMapper::toProject)
+//                                .collect(Collectors.toList());
+//                        existingEmployee.setProjects(updatedProjects);
+//                    }
+
+
+                    Employee savedEmployee = employeeRepository.save(existingEmployee);
+
+
+                    return employeeDTOMapper.toDTO(savedEmployee);
+
+//          Employee employee = employeeDTOMapper.toEntity(employeeDTO);
+//                Employee updatedEmployee = employeeService.updateEmployee(employee);
+//                return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
+//
+//            } else {
+//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Employee not found");
+//            }
         }
 
 
-    }
+
+
+
+
+
 
 
     @DeleteMapping("/delete/{employeeId}")
-    public ResponseEntity<?> deleteEmployee(@PathVariable Long employeeId) {
-        try {
-            Optional<Employee> existingEmployee = employeeService.getEmployeeByEmployeeId(employeeId);
-            if (existingEmployee.isPresent()) {
+    public ResponseEntity<?> deleteEmployee(@PathVariable Long employeeId) throws  Exception {
+
+            Employee existingEmployee = employeeService.getEmployeeByEmployeeId(employeeId);
+            if (existingEmployee  != null) {
                 employeeService.deleteEmployeeById(employeeId);
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Employee deleted successfully");
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Employee not found");
             }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+
     }
 
 

@@ -2,10 +2,12 @@ package com.example.EmployeeWeb.OtherInfo.mapper;
 
 import com.example.EmployeeWeb.Employee.DTO.EmployeeDTO;
 import com.example.EmployeeWeb.Employee.DTO.FilterEmployeeDTO;
+import com.example.EmployeeWeb.Employee.model.Employee;
 import com.example.EmployeeWeb.OtherInfo.DTO.OtherInformationDTO;
 import com.example.EmployeeWeb.OtherInfo.model.OtherInformation;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.example.EmployeeWeb.common.BaseMapper;
 import org.springframework.stereotype.Component;
