@@ -4,12 +4,20 @@ import com.example.EmployeeWeb.Employee.DTO.EmployeeDTO;
 import com.example.EmployeeWeb.Employee.DTO.EmployeeDTORequest;
 import com.example.EmployeeWeb.Employee.mapper.EmployeeDTOMapper;
 import com.example.EmployeeWeb.Employee.model.Employee;
+import com.example.EmployeeWeb.Employee.model.Enum;
+import com.example.EmployeeWeb.Employee.model.Level;
+
 import com.example.EmployeeWeb.Employee.repository.EmployeeRepository;
 
+
 import com.example.EmployeeWeb.Employee.validation.EmployeeValidation;
+import com.example.EmployeeWeb.OtherInfo.DTO.OtherInformationDTO;
 import com.example.EmployeeWeb.OtherInfo.mapper.OtherInformationDTOMapper;
+import com.example.EmployeeWeb.OtherInfo.model.OtherInformation;
 import com.example.EmployeeWeb.OtherInfo.repository.OtherInfoRepository;
+import com.example.EmployeeWeb.PersonalInformation.DTO.PersonalInformationDTO;
 import com.example.EmployeeWeb.PersonalInformation.mapper.PersonalInformationDTOMapper;
+import com.example.EmployeeWeb.PersonalInformation.model.PersonalInformation;
 import com.example.EmployeeWeb.PersonalInformation.repository.PersonalInfoRepository;
 import com.example.EmployeeWeb.exception.GlobalExceptionHandler;
 import jakarta.persistence.EntityNotFoundException;
@@ -73,25 +81,52 @@ public class EmployeeService {
     }
 
     @Transactional(readOnly = true)
-    public Employee updateEmployee(Employee employee) throws Exception {
+    public EmployeeDTO updateEmployee(Long employeeId ,EmployeeDTO employeeDTO) throws Exception {
+        Employee existingEmployee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new IllegalArgumentException("Employee not found"));
 
-        Employee existingEmployee = employeeRepository.findForEmployeeId(employee.getId());
-        if (existingEmployee != null) {
-            EmployeeDTO employeeDTO = employeeDTOMapper.toDTO(employee);
+      //  EmployeeDTO employeeDTO = employeeDTOMapper.toDTO(employee);
             boolean isPhoneChanged = !existingEmployee.getEmployeePhone().equals(employeeDTO.getEmployeePhone());
             boolean isEmailChanged = !existingEmployee.getEmployeeEmail().equals(employeeDTO.getEmployeeEmail());
 
             if (isPhoneChanged || isEmailChanged) {
                 throw new ValidationException("You cannot change the employee email or phone number.");
             }
+        existingEmployee.setEmployeeName(employeeDTO.getEmployeeName());
+        existingEmployee.setEmployeeSurname(employeeDTO.getEmployeeSurname());
+        existingEmployee.setLevel(Level.valueOf(String.valueOf(employeeDTO.getLevel())));
+        existingEmployee.setEmployeePhone(employeeDTO.getEmployeePhone());
+        existingEmployee.setEmployeeEmail(employeeDTO.getEmployeeEmail());
+        existingEmployee.setBirthdate(employeeDTO.getBirthdate());
+        existingEmployee.setWorkingPlace(Enum.WorkingPlace.valueOf(String.valueOf(employeeDTO.getWorkingPlace())));
+        existingEmployee.setContractType(Enum.ContractType.valueOf(String.valueOf(employeeDTO.getContractType())));
+        existingEmployee.setTeam(Enum.Team.valueOf(String.valueOf(employeeDTO.getTeam())));
+        existingEmployee.setStartingDate(employeeDTO.getStartingDate());
+        existingEmployee.setEndingDate(employeeDTO.getEndingDate());
 
-            if (isEmailChanged) {
-                throw new ValidationException("You cannot change the employee email.");
-            }
 
-
+        if (existingEmployee.getPersonalInformation() == null) {
+            existingEmployee.setPersonalInformation(new PersonalInformation());
         }
-        return employeeRepository.save(employee);
+        PersonalInformationDTO personalInfoDTO = employeeDTO.getPersonalInformation();
+        existingEmployee.getPersonalInformation().setBirthdate(personalInfoDTO.getBirthdate());
+        existingEmployee.getPersonalInformation().setPersonalSocialSecurityNumber(personalInfoDTO.getPersonalSocialSecurityNumber());
+        existingEmployee.getPersonalInformation().setMilitaryService(personalInfoDTO.getMilitaryService());
+        existingEmployee.getPersonalInformation().setGender((personalInfoDTO.getGender()));
+        existingEmployee.getPersonalInformation().setMaritalStatus(personalInfoDTO.getMaritalStatus());
+
+
+        if (existingEmployee.getOtherInformation() == null) {
+            existingEmployee.setOtherInformation(new OtherInformation());
+        }
+        OtherInformationDTO otherInfoDTO = employeeDTO.getOtherInformation();
+        existingEmployee.getOtherInformation().setAddress(otherInfoDTO.getAddress());
+        existingEmployee.getOtherInformation().setBank(otherInfoDTO.getBank());
+        existingEmployee.getOtherInformation().setIban(otherInfoDTO.getIban());
+        existingEmployee.getOtherInformation().setEmergencyPersonName(otherInfoDTO.getEmergencyPersonName());
+        existingEmployee.getOtherInformation().setEmergencyPersonPhone(otherInfoDTO.getEmergencyPersonPhone());
+        Employee savedEmployee = employeeRepository.save(existingEmployee);
+            return employeeDTOMapper.toDTO(savedEmployee);
     }
 
 

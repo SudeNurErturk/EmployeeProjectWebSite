@@ -4,8 +4,14 @@ import com.example.EmployeeWeb.Employee.DTO.EmployeeDTO;
 import com.example.EmployeeWeb.Employee.DTO.EmployeeDTORequest;
 import com.example.EmployeeWeb.Employee.DTO.FilterEmployeeDTO;
 import com.example.EmployeeWeb.Employee.model.Employee;
+import com.example.EmployeeWeb.Employee.model.Enum;
+import com.example.EmployeeWeb.Employee.model.Level;
+import com.example.EmployeeWeb.OtherInfo.DTO.OtherInformationDTO;
 import com.example.EmployeeWeb.OtherInfo.mapper.OtherInformationDTOMapper;
+import com.example.EmployeeWeb.OtherInfo.model.OtherInformation;
+import com.example.EmployeeWeb.PersonalInformation.DTO.PersonalInformationDTO;
 import com.example.EmployeeWeb.PersonalInformation.mapper.PersonalInformationDTOMapper;
+import com.example.EmployeeWeb.PersonalInformation.model.PersonalInformation;
 import com.example.EmployeeWeb.common.BaseMapper;
 import org.springframework.stereotype.Component;
 

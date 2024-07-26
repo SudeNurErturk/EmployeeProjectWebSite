@@ -61,7 +61,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity getAllEmployees() {
+    public ResponseEntity<?> getAllEmployees() {
         List<Employee> employees = employeeService.findAll();
         List<EmployeeDTO> employeeDTO = employeeDTOMapper.toListDTO(employees);
         List<EmployeeDTORequest> employeeDTORequests = employeeDTOMapper.toListDTOReguest(employeeDTO);
@@ -99,6 +99,7 @@ public class EmployeeController {
     public ResponseEntity<?> createEmployee(@RequestBody EmployeeDTO employeeDTO) {
 
             Employee employee = employeeDTOMapper.toEntity(employeeDTO);
+
             System.out.println("Entity: " + employee.toString());
             Employee savedEmployee = employeeService.saveEmployee(employee);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedEmployee);
@@ -109,80 +110,8 @@ public class EmployeeController {
 
     @PutMapping(value = "/update/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public EmployeeDTO updateEmployee(@PathVariable Long id, @Valid @RequestBody EmployeeDTO employeeDTO) throws  Exception {
-
-//        Employee existingEmployee = employeeRepository.findForEmployeeId(id);
-//            if (existingEmployee !=null) {
-//               employeeDTO.setId(existingEmployee.getId());
-
-//             employeeDTO.getOtherInformation().setId(existingEmployee.getId());
-//           employeeDTO.getPersonalInformation().setId(existingEmployee.getPersonalInformation().getId());
-
-                    Employee existingEmployee = employeeRepository.findById(id)
-                            .orElseThrow(() -> new IllegalArgumentException("Employee not found"));
-
-                   //validateUniqueFieldsForUpdate(employeeDTO, existingEmployee);
-                    existingEmployee.setEmployeeName(employeeDTO.getEmployeeName());
-                    existingEmployee.setEmployeeSurname(employeeDTO.getEmployeeSurname());
-
-
-
-                    existingEmployee.setLevel(Level.valueOf(String.valueOf(employeeDTO.getLevel())));
-                    existingEmployee.setEmployeePhone(employeeDTO.getEmployeePhone());
-                    existingEmployee.setEmployeeEmail(employeeDTO.getEmployeeEmail());
-                    existingEmployee.setBirthdate(employeeDTO.getBirthdate());
-                    existingEmployee.setWorkingPlace(Enum.WorkingPlace.valueOf(String.valueOf(employeeDTO.getWorkingPlace())));
-                    existingEmployee.setContractType(Enum.ContractType.valueOf(String.valueOf(employeeDTO.getContractType())));
-                    existingEmployee.setTeam(Enum.Team.valueOf(String.valueOf(employeeDTO.getTeam())));
-                    existingEmployee.setStartingDate(employeeDTO.getStartingDate());
-                    existingEmployee.setEndingDate(employeeDTO.getEndingDate());
-
-
-                    if (existingEmployee.getPersonalInformation() == null) {
-                        existingEmployee.setPersonalInformation(new PersonalInformation());
-                    }
-                    PersonalInformationDTO personalInfoDTO = employeeDTO.getPersonalInformation();
-                    existingEmployee.getPersonalInformation().setBirthdate(personalInfoDTO.getBirthdate());
-                    existingEmployee.getPersonalInformation().setPersonalSocialSecurityNumber(personalInfoDTO.getPersonalSocialSecurityNumber());
-                    existingEmployee.getPersonalInformation().setMilitaryService(personalInfoDTO.getMilitaryService());
-                    existingEmployee.getPersonalInformation().setGender((personalInfoDTO.getGender()));
-                    existingEmployee.getPersonalInformation().setMaritalStatus(personalInfoDTO.getMaritalStatus());
-
-
-                    if (existingEmployee.getOtherInformation() == null) {
-                        existingEmployee.setOtherInformation(new OtherInformation());
-                    }
-                    OtherInformationDTO otherInfoDTO = employeeDTO.getOtherInformation();
-                    existingEmployee.getOtherInformation().setAddress(otherInfoDTO.getAddress());
-                    existingEmployee.getOtherInformation().setBank(otherInfoDTO.getBank());
-                    existingEmployee.getOtherInformation().setIban(otherInfoDTO.getIban());
-                    existingEmployee.getOtherInformation().setEmergencyPersonName(otherInfoDTO.getEmergencyPersonName());
-                    existingEmployee.getOtherInformation().setEmergencyPersonPhone(otherInfoDTO.getEmergencyPersonPhone());
-
-
-//                    List<ProjectDTO> projects = employeeDTO.g();
-//                    if (projects != null) {
-//                        List<Project> updatedProjects = projects.stream()
-//                                .map(proMapper::toProject)
-//                                .collect(Collectors.toList());
-//                        existingEmployee.setProjects(updatedProjects);
-//                    }
-
-
-                    Employee savedEmployee = employeeRepository.save(existingEmployee);
-
-
-                    return employeeDTOMapper.toDTO(savedEmployee);
-
-//          Employee employee = employeeDTOMapper.toEntity(employeeDTO);
-//                Employee updatedEmployee = employeeService.updateEmployee(employee);
-//                return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
-//
-//            } else {
-//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Employee not found");
-//            }
-        }
-
-
+        return employeeService.updateEmployee(id, employeeDTO);
+    }
 
 
 
@@ -192,16 +121,10 @@ public class EmployeeController {
 
     @DeleteMapping("/delete/{employeeId}")
     public ResponseEntity<?> deleteEmployee(@PathVariable Long employeeId) throws  Exception {
-
-            Employee existingEmployee = employeeService.getEmployeeByEmployeeId(employeeId);
-            if (existingEmployee  != null) {
-                employeeService.deleteEmployeeById(employeeId);
+                 employeeService.deleteEmployeeById(employeeId);
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Employee deleted successfully");
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Employee not found");
             }
 
-    }
 
 
 }
