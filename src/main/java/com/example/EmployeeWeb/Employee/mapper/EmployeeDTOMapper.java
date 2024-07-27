@@ -4,19 +4,17 @@ import com.example.EmployeeWeb.Employee.DTO.EmployeeDTO;
 import com.example.EmployeeWeb.Employee.DTO.EmployeeDTORequest;
 import com.example.EmployeeWeb.Employee.DTO.FilterEmployeeDTO;
 import com.example.EmployeeWeb.Employee.model.Employee;
-import com.example.EmployeeWeb.Employee.model.Enum;
-import com.example.EmployeeWeb.Employee.model.Level;
-import com.example.EmployeeWeb.OtherInfo.DTO.OtherInformationDTO;
 import com.example.EmployeeWeb.OtherInfo.mapper.OtherInformationDTOMapper;
-import com.example.EmployeeWeb.OtherInfo.model.OtherInformation;
-import com.example.EmployeeWeb.PersonalInformation.DTO.PersonalInformationDTO;
 import com.example.EmployeeWeb.PersonalInformation.mapper.PersonalInformationDTOMapper;
-import com.example.EmployeeWeb.PersonalInformation.model.PersonalInformation;
 import com.example.EmployeeWeb.common.BaseMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class EmployeeDTOMapper implements BaseMapper<Employee, EmployeeDTO> {
 
@@ -170,6 +168,15 @@ public class EmployeeDTOMapper implements BaseMapper<Employee, EmployeeDTO> {
 
 
         return filterEmployeeDTO;
+    }
+
+
+    // Page<Employee>'i Page<EmployeeDTO>'ya dönüştüren metot
+    public Page<EmployeeDTO> toPageDTO(Page<Employee> employeePage) {
+        List<EmployeeDTO> dtoList = employeePage.getContent().stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+        return new PageImpl<>(dtoList, employeePage.getPageable(), employeePage.getTotalElements());
     }
 
 

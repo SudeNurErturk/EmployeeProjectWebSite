@@ -1,6 +1,7 @@
 package com.example.EmployeeWeb.PersonalInformation.DTO;
 
 import com.example.EmployeeWeb.Employee.model.Employee;
+import com.example.EmployeeWeb.enums.Enum;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,11 +21,12 @@ public class PersonalInformationDTO implements Serializable {
 
     private String personalSocialSecurityNumber;
 
+  //  private Enum.MilitaryService militaryService;
     private String militaryService;
 
     private String gender;
-
     private String maritalStatus;
+   // private Enum.MaritalStatus maritalStatus;
 
     private Employee employee;
 

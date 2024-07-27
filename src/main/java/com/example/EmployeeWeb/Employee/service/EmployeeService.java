@@ -2,14 +2,16 @@ package com.example.EmployeeWeb.Employee.service;
 
 import com.example.EmployeeWeb.Employee.DTO.EmployeeDTO;
 import com.example.EmployeeWeb.Employee.DTO.EmployeeDTORequest;
+import com.example.EmployeeWeb.Employee.DTO.FilterEmployeeDTO;
 import com.example.EmployeeWeb.Employee.mapper.EmployeeDTOMapper;
 import com.example.EmployeeWeb.Employee.model.Employee;
-import com.example.EmployeeWeb.Employee.model.Enum;
+import com.example.EmployeeWeb.enums.Enum;
 import com.example.EmployeeWeb.Employee.model.Level;
 
 import com.example.EmployeeWeb.Employee.repository.EmployeeRepository;
 
 
+import com.example.EmployeeWeb.Employee.specification.EmployeeSpecification;
 import com.example.EmployeeWeb.Employee.validation.EmployeeValidation;
 import com.example.EmployeeWeb.OtherInfo.DTO.OtherInformationDTO;
 import com.example.EmployeeWeb.OtherInfo.mapper.OtherInformationDTOMapper;
@@ -31,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @AllArgsConstructor
@@ -42,9 +45,6 @@ public class EmployeeService {
     private final PersonalInfoRepository personalInformationRepository;
     private final EmployeeValidation employeeValidation;
     private final EmployeeDTOMapper employeeDTOMapper;
-    private final OtherInformationDTOMapper otherInformationDTOMapper;
-    private final PersonalInformationDTOMapper personalInformationDTOMapper;
-    private final GlobalExceptionHandler globalExceptionHandler;
 
 
     @Transactional
@@ -111,9 +111,9 @@ public class EmployeeService {
         PersonalInformationDTO personalInfoDTO = employeeDTO.getPersonalInformation();
         existingEmployee.getPersonalInformation().setBirthdate(personalInfoDTO.getBirthdate());
         existingEmployee.getPersonalInformation().setPersonalSocialSecurityNumber(personalInfoDTO.getPersonalSocialSecurityNumber());
-        existingEmployee.getPersonalInformation().setMilitaryService(personalInfoDTO.getMilitaryService());
+        existingEmployee.getPersonalInformation().setMilitaryService(Enum.MilitaryService.valueOf(personalInfoDTO.getMilitaryService()));
         existingEmployee.getPersonalInformation().setGender((personalInfoDTO.getGender()));
-        existingEmployee.getPersonalInformation().setMaritalStatus(personalInfoDTO.getMaritalStatus());
+        existingEmployee.getPersonalInformation().setMaritalStatus(Enum.MaritalStatus.valueOf(personalInfoDTO.getMaritalStatus()));
 
 
         if (existingEmployee.getOtherInformation() == null) {
@@ -154,4 +154,13 @@ public class EmployeeService {
         List<EmployeeDTO> employeeDTO = employeeDTOMapper.toListDTO(employees);
         return employeeDTOMapper.toListDTOReguest(employeeDTO);
     }
+
+//    public List<EmployeeDTO> filterEmployees(FilterEmployeeDTO filterRequest) {
+//        Specification<Employee> spec = EmployeeSpecification.buildSpecifications(filterRequest);
+//        List<Employee> employees = employeeRepository.findAll(spec);
+//        return employees.stream()
+//                .map(employeeDTOMapper::toDTO)
+//                .collect(Collectors.toList());
+//    }
+
 }

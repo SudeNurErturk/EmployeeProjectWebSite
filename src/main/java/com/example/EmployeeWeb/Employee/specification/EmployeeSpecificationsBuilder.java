@@ -32,12 +32,14 @@ public class EmployeeSpecificationsBuilder {
             specs.add(new EmployeeSpecification(param));
         }
 
-        Specification<Employee> result = specs.get(0);
-        for (int i = 1; i < specs.size(); i++) {
-            result = Specification.where(result).and(specs.get(i));
-        }
+//        Specification<Employee> result = specs.get(0);
+//        for (int i = 1; i < specs.size(); i++) {
+//            result = Specification.where(result).and(specs.get(i));
+//
+return null;
+    }
 
-        return result;
+
     }
 
 
@@ -46,7 +48,7 @@ public class EmployeeSpecificationsBuilder {
 
 
 
-}
+
 
 
 
