@@ -4,34 +4,47 @@ import com.example.EmployeeWeb.Employee.DTO.EmployeeDTO;
 import com.example.EmployeeWeb.Employee.DTO.EmployeeDTORequest;
 import com.example.EmployeeWeb.Employee.mapper.EmployeeDTOMapper;
 import com.example.EmployeeWeb.Employee.model.Employee;
+import com.example.EmployeeWeb.Employee.model.Enum;
+import com.example.EmployeeWeb.Employee.model.Level;
+
 import com.example.EmployeeWeb.Employee.repository.EmployeeRepository;
 
+
 import com.example.EmployeeWeb.Employee.validation.EmployeeValidation;
+import com.example.EmployeeWeb.OtherInfo.DTO.OtherInformationDTO;
+import com.example.EmployeeWeb.OtherInfo.mapper.OtherInformationDTOMapper;
+import com.example.EmployeeWeb.OtherInfo.model.OtherInformation;
 import com.example.EmployeeWeb.OtherInfo.repository.OtherInfoRepository;
+import com.example.EmployeeWeb.PersonalInformation.DTO.PersonalInformationDTO;
+import com.example.EmployeeWeb.PersonalInformation.mapper.PersonalInformationDTOMapper;
+import com.example.EmployeeWeb.PersonalInformation.model.PersonalInformation;
 import com.example.EmployeeWeb.PersonalInformation.repository.PersonalInfoRepository;
+import com.example.EmployeeWeb.exception.GlobalExceptionHandler;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
+
 import jakarta.validation.ValidationException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @AllArgsConstructor
 @Service
 public class EmployeeService {
 
-    //private final EmployeeDTOMapper employeeDTOMapper;
     private final EmployeeRepository employeeRepository;
     private final OtherInfoRepository otherInformationRepository;
     private final PersonalInfoRepository personalInformationRepository;
-    private  final EmployeeValidation employeeValidation;
+    private final EmployeeValidation employeeValidation;
     private final EmployeeDTOMapper employeeDTOMapper;
+    private final OtherInformationDTOMapper otherInformationDTOMapper;
+    private final PersonalInformationDTOMapper personalInformationDTOMapper;
+    private final GlobalExceptionHandler globalExceptionHandler;
 
 
     @Transactional
@@ -39,77 +52,81 @@ public class EmployeeService {
         return employeeRepository.findAll();
     }
 
-
-//    public List<Employee> getEmployees(Specification<Employee> spec) {
-//        return employeeRepository.findAll(spec);
-//    }
-
-
     public List<Employee> getEmployees(Specification<Employee> spec, Sort sort) {
         return employeeRepository.findAll(spec, sort);
     }
 
 
-    public Optional<Employee> getEmployeeByEmployeeId(Long employeeId) {
-        return employeeRepository.findById(employeeId);
+    public Employee getEmployeeByEmployeeId(Long employeeId) {
+        return employeeRepository.findForEmployeeId(employeeId);
     }
 
-//    @Transactional
-//    public List<EmployeeDTORequest> getEmployeeByIdAsDTO(Long id) {
-//        return employeeRepository.findAll().stream()
-//                .map(employeeMapper::toDTORequest)
-//                .collect(Collectors.toList());
-//    }
 
-    @Transactional
+
     public Optional<Employee> getEmployeeById(Long id) {
         return employeeRepository.findById(id);
     }
 
     @Transactional
-    public Employee saveEmployee(Employee employee) throws Exception {
+    public Employee saveEmployee(Employee employee) throws EntityNotFoundException {
         EmployeeDTO employeeDTO = employeeDTOMapper.toDTO(employee);
-
-//        Optional<Employee> existingEmployee = employeeRepository.findByEmployeeEmail(employee.getEmployeeEmail());
-//        if (existingEmployee.isPresent() && !existingEmployee.get().getId().equals(employee.getId())) {
-//            throw new Exception("Email already exists");
-//        }  Optional<Employee> existingEmployeeByPhone = employeeRepository.findByEmployeePhone(employee.getEmployeePhone());
-//        if (existingEmployeeByPhone.isPresent() && !existingEmployeeByPhone.get().getId().equals(employee.getId())) {
-//            throw new Exception("phone already exists");
-//        }
-
         employeeValidation.validateEmployee(employeeDTO);
-
-        if (employee.getOtherInformation() != null) {
+        if (!employeeValidation.isEmailExists(employee.getEmployeeEmail()) && !employeeValidation.isPhoneExists(employee.getEmployeePhone()) && employee.getOtherInformation() != null) {
             otherInformationRepository.save(employee.getOtherInformation());
         }
-        if (employee.getPersonalInformation() != null) {
+        if (!employeeValidation.isEmailExists(employee.getEmployeeEmail()) && !employeeValidation.isPhoneExists(employee.getEmployeePhone()) && employee.getPersonalInformation() != null) {
             personalInformationRepository.save(employee.getPersonalInformation());
         }
         return employeeRepository.save(employee);
     }
-    @Transactional
-    public Employee updateEmployee(Employee employee) throws Exception {
 
-        Employee existingEmployee = employeeRepository.findById(employee.getId())
-                .orElseThrow(() -> new Exception("Employee not found"));
+    @Transactional(readOnly = true)
+    public EmployeeDTO updateEmployee(Long employeeId ,EmployeeDTO employeeDTO) throws Exception {
+        Employee existingEmployee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new IllegalArgumentException("Employee not found"));
 
+      //  EmployeeDTO employeeDTO = employeeDTOMapper.toDTO(employee);
+            boolean isPhoneChanged = !existingEmployee.getEmployeePhone().equals(employeeDTO.getEmployeePhone());
+            boolean isEmailChanged = !existingEmployee.getEmployeeEmail().equals(employeeDTO.getEmployeeEmail());
 
-        EmployeeDTO employeeDTO = employeeDTOMapper.toDTO(employee);
-        boolean isPhoneChanged = !existingEmployee.getEmployeePhone().equals(employeeDTO.getEmployeePhone());
-        boolean isEmailChanged = !existingEmployee.getEmployeeEmail().equals(employeeDTO.getEmployeeEmail());
-
-
-        if (isPhoneChanged ) {
-
-                throw new ValidationException("You cannot change the employee phone number.");
+            if (isPhoneChanged || isEmailChanged) {
+                throw new ValidationException("You cannot change the employee email or phone number.");
             }
+        existingEmployee.setEmployeeName(employeeDTO.getEmployeeName());
+        existingEmployee.setEmployeeSurname(employeeDTO.getEmployeeSurname());
+        existingEmployee.setLevel(Level.valueOf(String.valueOf(employeeDTO.getLevel())));
+        existingEmployee.setEmployeePhone(employeeDTO.getEmployeePhone());
+        existingEmployee.setEmployeeEmail(employeeDTO.getEmployeeEmail());
+        existingEmployee.setBirthdate(employeeDTO.getBirthdate());
+        existingEmployee.setWorkingPlace(Enum.WorkingPlace.valueOf(String.valueOf(employeeDTO.getWorkingPlace())));
+        existingEmployee.setContractType(Enum.ContractType.valueOf(String.valueOf(employeeDTO.getContractType())));
+        existingEmployee.setTeam(Enum.Team.valueOf(String.valueOf(employeeDTO.getTeam())));
+        existingEmployee.setStartingDate(employeeDTO.getStartingDate());
+        existingEmployee.setEndingDate(employeeDTO.getEndingDate());
 
-        if (isEmailChanged){
-        throw new ValidationException("You cannot change the employee email.");
+
+        if (existingEmployee.getPersonalInformation() == null) {
+            existingEmployee.setPersonalInformation(new PersonalInformation());
         }
+        PersonalInformationDTO personalInfoDTO = employeeDTO.getPersonalInformation();
+        existingEmployee.getPersonalInformation().setBirthdate(personalInfoDTO.getBirthdate());
+        existingEmployee.getPersonalInformation().setPersonalSocialSecurityNumber(personalInfoDTO.getPersonalSocialSecurityNumber());
+        existingEmployee.getPersonalInformation().setMilitaryService(personalInfoDTO.getMilitaryService());
+        existingEmployee.getPersonalInformation().setGender((personalInfoDTO.getGender()));
+        existingEmployee.getPersonalInformation().setMaritalStatus(personalInfoDTO.getMaritalStatus());
 
-        return employeeRepository.saveAndFlush(employee);
+
+        if (existingEmployee.getOtherInformation() == null) {
+            existingEmployee.setOtherInformation(new OtherInformation());
+        }
+        OtherInformationDTO otherInfoDTO = employeeDTO.getOtherInformation();
+        existingEmployee.getOtherInformation().setAddress(otherInfoDTO.getAddress());
+        existingEmployee.getOtherInformation().setBank(otherInfoDTO.getBank());
+        existingEmployee.getOtherInformation().setIban(otherInfoDTO.getIban());
+        existingEmployee.getOtherInformation().setEmergencyPersonName(otherInfoDTO.getEmergencyPersonName());
+        existingEmployee.getOtherInformation().setEmergencyPersonPhone(otherInfoDTO.getEmergencyPersonPhone());
+        Employee savedEmployee = employeeRepository.save(existingEmployee);
+            return employeeDTOMapper.toDTO(savedEmployee);
     }
 
 
@@ -132,10 +149,9 @@ public class EmployeeService {
         }
     }
 
-
+   @Transactional
     public List<EmployeeDTORequest> convertToDTORequestList(List<Employee> employees) {
         List<EmployeeDTO> employeeDTO = employeeDTOMapper.toListDTO(employees);
-      //  List<EmployeeDTORequest> employeeDTORequests = employeeDTOMapper.toListDTOReguest(employeeDTO)
-;        return employeeDTOMapper.toListDTOReguest(employeeDTO);
+        return employeeDTOMapper.toListDTOReguest(employeeDTO);
     }
 }

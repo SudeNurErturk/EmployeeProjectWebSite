@@ -3,15 +3,20 @@ package com.example.EmployeeWeb.OtherInfo.model;
 import com.example.EmployeeWeb.Employee.model.Employee;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serial;
+import java.util.Set;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "OTHER_INFORMATIONS")
+@AllArgsConstructor
+@NoArgsConstructor
 public class OtherInformation {
 
     @Serial
@@ -39,9 +44,9 @@ public class OtherInformation {
     @Column(name = "EMERGENCY_PERSON_PHONE")
     private String emergencyPersonPhone;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "EMPLOYEE_ID")
+//    @OneToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "EMPLOYEE_ID")
 
-    private Employee employee;
+//    private Employee employee;
 
 }

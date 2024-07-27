@@ -22,7 +22,6 @@ public class ProjectController {
 
 
     private final ProjectService projectService;
-
     private final ProjectDTOMapper projectDTOMapper;
 
 
@@ -31,11 +30,7 @@ public class ProjectController {
         Project project = projectService.getProjectByIdAsDTO(id);
         return project != null ? ResponseEntity.ok(project) : ResponseEntity.notFound().build();
     }
-/*
-    @GetMapping("/list")
-    public List<ProjectDtoRequest> getAllProjects() {
-        return projectService.getAllProjects();
-    }*/
+
 
     @GetMapping("/list")
     public ResponseEntity getAllEmployees() {
@@ -63,21 +58,18 @@ public class ProjectController {
         try {
             Optional<Project> existingProject = projectService.getProjectById(projectId);
             if (existingProject.isPresent()) {
-
                 projectDto.setProjectId(projectId);
-                // project.setProjectName(project.getProjectName());
                 Project project = projectDTOMapper.toEntity(projectDto);
                 Project updatedProject = projectService.updateProject(project);
-//                ProjectDtoRequest projectDtoRequest = projectMapper.toDtoRequest(updatedProject);
                 return new ResponseEntity<>(updatedProject, HttpStatus.OK);
-            } else {
+            }
+            else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Project not found");
             }
         }
-            catch (RuntimeException e) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-            }
-          catch (Exception e) {
+        catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
@@ -85,7 +77,7 @@ public class ProjectController {
 
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteProject(@PathVariable Long id) {
+    public ResponseEntity<?> deleteProject(@PathVariable Long id) throws Exception {
 
         try {
             Optional<Project> existingProject = projectService.getProjectById(id);

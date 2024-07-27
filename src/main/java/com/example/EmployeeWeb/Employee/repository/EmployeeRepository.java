@@ -22,10 +22,15 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> , JpaS
 
     @Query("SELECT CASE WHEN COUNT(e) > 0 THEN true ELSE false END FROM Employee e WHERE e.employeePhone = :employeePhone")
     boolean findByEmployeePhone(@Param("employeePhone")String employeePhone);
-    Optional<Employee> findById(Long id);
+
+    @Query("SELECT e FROM Employee e WHERE e.id = :id AND e.otherInformation.id = :id AND e.personalInformation.id= :id")
+    Employee findForEmployeeId(Long id);
+
 
 
     @Query("SELECT CONCAT(e.employeeName, ' ', e.employeeSurname) AS fullName FROM Employee e")
     List<EmployeeProjection> findEmployeeFullNames();
+    @Query("SELECT e FROM Employee e")
+    List<EmployeeProjection> findAllEmployees();
 
 }

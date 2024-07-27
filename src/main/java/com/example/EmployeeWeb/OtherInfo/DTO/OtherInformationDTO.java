@@ -1,5 +1,6 @@
 package com.example.EmployeeWeb.OtherInfo.DTO;
 
+import com.example.EmployeeWeb.Employee.model.Employee;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,5 +22,6 @@ public class OtherInformationDTO implements Serializable {
     private String emergencyPersonName;
 
     private String emergencyPersonPhone;
+    //private Employee manager;
 
 }

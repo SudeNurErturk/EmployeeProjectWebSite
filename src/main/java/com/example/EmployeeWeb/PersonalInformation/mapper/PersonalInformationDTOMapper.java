@@ -26,7 +26,7 @@ public class PersonalInformationDTOMapper implements BaseMapper<PersonalInformat
         personalInformation.setMilitaryService( dto.getMilitaryService() );
         personalInformation.setGender( dto.getGender() );
         personalInformation.setMaritalStatus( dto.getMaritalStatus() );
-        personalInformation.setEmployee( dto.getEmployee() );
+       // personalInformation.setEmployee( dto.getEmployee() );
 
         return personalInformation;
     }
@@ -45,7 +45,7 @@ public class PersonalInformationDTOMapper implements BaseMapper<PersonalInformat
         personalInformationDTO.setMilitaryService( entity.getMilitaryService() );
         personalInformationDTO.setGender( entity.getGender() );
         personalInformationDTO.setMaritalStatus( entity.getMaritalStatus() );
-        personalInformationDTO.setEmployee( entity.getEmployee() );
+      //  personalInformationDTO.setEmployee( entity.getEmployee() );
 
         return personalInformationDTO;
     }

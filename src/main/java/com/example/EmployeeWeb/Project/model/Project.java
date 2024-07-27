@@ -51,8 +51,8 @@ public class Project {
 
 
     @ElementCollection
-    @CollectionTable(name = "project_employees", joinColumns = @JoinColumn(name = "project_ID"))
-    @Column(name = "employee_ID")
+    @CollectionTable(name = "project_employees", joinColumns = @JoinColumn(name = "project_Id"))
+    @Column(name = "employee_Id")
     private Set<Long> employeeIds; // Sadece Employee ID'leri tutan set
 
 
