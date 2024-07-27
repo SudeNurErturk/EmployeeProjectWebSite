@@ -4,8 +4,10 @@ package com.example.EmployeeWeb.Employee.model;
 import com.example.EmployeeWeb.OtherInfo.model.OtherInformation;
 import com.example.EmployeeWeb.PersonalInformation.model.PersonalInformation;
 import com.example.EmployeeWeb.Project.model.Project;
+import com.example.EmployeeWeb.enums.Enum;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;

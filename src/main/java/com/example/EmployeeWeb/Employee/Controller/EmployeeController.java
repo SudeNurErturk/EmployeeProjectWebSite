@@ -6,8 +6,6 @@ import com.example.EmployeeWeb.Employee.DTO.EmployeeDTORequest;
 import com.example.EmployeeWeb.Employee.DTO.FilterEmployeeDTO;
 
 import com.example.EmployeeWeb.Employee.mapper.EmployeeDTOMapper;
-import com.example.EmployeeWeb.Employee.model.Enum;
-import com.example.EmployeeWeb.Employee.model.Level;
 import com.example.EmployeeWeb.Employee.projection.EmployeeProjection;
 import com.example.EmployeeWeb.Employee.projection.EmployeeProjectionService;
 import com.example.EmployeeWeb.Employee.repository.EmployeeRepository;
@@ -15,14 +13,10 @@ import com.example.EmployeeWeb.Employee.service.EmployeeService;
 import com.example.EmployeeWeb.Employee.model.Employee;
 
 import com.example.EmployeeWeb.Employee.specification.*;
-import com.example.EmployeeWeb.OtherInfo.DTO.OtherInformationDTO;
-import com.example.EmployeeWeb.OtherInfo.model.OtherInformation;
-import com.example.EmployeeWeb.PersonalInformation.DTO.PersonalInformationDTO;
-import com.example.EmployeeWeb.PersonalInformation.model.PersonalInformation;
-import com.example.EmployeeWeb.Project.DTO.ProjectDTO;
-import com.example.EmployeeWeb.Project.model.Project;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -37,8 +31,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 
 import java.util.List;
-import java.util.Optional;
-
 
 
 @RestController
@@ -78,20 +70,36 @@ public class EmployeeController {
     public List<EmployeeProjection> getAllEmployeeProjections() {
         return employeeProjectionService.getAllEmployeeProjections();
     }
-
-
     @ResponseBody
-    @PostMapping("/filter")
-    public List<EmployeeDTORequest> filterEmployees(@RequestBody EmployeeFilterRequest filterRequest) {
+    @PostMapping("/pageEmployees")
+    public Page<EmployeeDTO> getFilteredEmployees(@RequestBody
+            FilterEmployeeDTO filterEmployeeDTO,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "employeeName") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDirection) {
 
-        Specification<Employee> spec = EmployeeSpecification.buildSpecifications(filterRequest.getEmployee());
-        String sortBy = filterRequest.getSortBy() != null ? filterRequest.getSortBy() : "id";
-        Sort.Direction sortDirection = "DESC".equalsIgnoreCase(filterRequest.getSortDirection()) ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort sort = Sort.by(sortDirection, sortBy);
+        Pageable pageable = PageRequest.of(page, size);
+        Specification<Employee> spec = EmployeeSpecification.buildSpecifications(filterEmployeeDTO, sortBy, sortDirection);
+        Page<Employee> employeePage = employeeRepository.findAll(spec, pageable);
+        Page<EmployeeDTO> employeeDTOPage = employeeDTOMapper.toPageDTO(employeePage);
 
-        List<Employee> employees = employeeService.getEmployees(spec, sort);
-        return employeeService.convertToDTORequestList(employees);
+        return employeeDTOPage;
     }
+
+
+//    @ResponseBody
+//    @PostMapping("/filter")
+//    public List<EmployeeDTO> filterEmployees(@RequestBody FilterEmployeeDTO filterRequest) {
+//
+//        Specification<Employee> spec = EmployeeSpecification.buildSpecifications(filterRequest);
+////        String sortBy = filterRequest.getSortBy() != null ? filterRequest.getSortBy() : "id";
+////        Sort.Direction sortDirection = "DESC".equalsIgnoreCase(filterRequest.getSortDirection()) ? Sort.Direction.DESC : Sort.Direction.ASC;
+////        Sort sort = Sort.by(sortDirection, sortBy);
+//
+//       // List<Employee> employees = employeeService.getEmployees(spec, sort);
+//        return employeeService.filterEmployees(filterRequest);
+//    }
 
 
     @ResponseBody
@@ -99,11 +107,8 @@ public class EmployeeController {
     public ResponseEntity<?> createEmployee(@RequestBody EmployeeDTO employeeDTO) {
 
             Employee employee = employeeDTOMapper.toEntity(employeeDTO);
-
-            System.out.println("Entity: " + employee.toString());
             Employee savedEmployee = employeeService.saveEmployee(employee);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedEmployee);
-            // return ResponseEntity.status(HttpStatus.CREATED).body(null);
 
     }
 

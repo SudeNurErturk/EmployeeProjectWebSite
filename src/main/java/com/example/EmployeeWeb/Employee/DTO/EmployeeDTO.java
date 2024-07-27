@@ -1,6 +1,6 @@
 package com.example.EmployeeWeb.Employee.DTO;
 
-import com.example.EmployeeWeb.Employee.model.Enum;
+import com.example.EmployeeWeb.enums.Enum;
 import com.example.EmployeeWeb.Employee.model.Level;
 import com.example.EmployeeWeb.OtherInfo.DTO.OtherInformationDTO;
 import com.example.EmployeeWeb.PersonalInformation.DTO.PersonalInformationDTO;

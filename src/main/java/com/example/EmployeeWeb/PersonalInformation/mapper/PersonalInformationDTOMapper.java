@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.EmployeeWeb.common.BaseMapper;
+import com.example.EmployeeWeb.enums.Enum;
 import org.springframework.stereotype.Component;
 
 
@@ -23,9 +24,9 @@ public class PersonalInformationDTOMapper implements BaseMapper<PersonalInformat
         personalInformation.setId( dto.getId() );
         personalInformation.setBirthdate( dto.getBirthdate() );
         personalInformation.setPersonalSocialSecurityNumber( dto.getPersonalSocialSecurityNumber() );
-        personalInformation.setMilitaryService( dto.getMilitaryService() );
+        personalInformation.setMilitaryService(Enum.MilitaryService.valueOf(dto.getMilitaryService()));
         personalInformation.setGender( dto.getGender() );
-        personalInformation.setMaritalStatus( dto.getMaritalStatus() );
+        personalInformation.setMaritalStatus(Enum.MaritalStatus.valueOf(dto.getMaritalStatus()));
        // personalInformation.setEmployee( dto.getEmployee() );
 
         return personalInformation;
@@ -42,9 +43,10 @@ public class PersonalInformationDTOMapper implements BaseMapper<PersonalInformat
         personalInformationDTO.setId( entity.getId() );
         personalInformationDTO.setBirthdate( entity.getBirthdate() );
         personalInformationDTO.setPersonalSocialSecurityNumber( entity.getPersonalSocialSecurityNumber() );
-        personalInformationDTO.setMilitaryService( entity.getMilitaryService() );
+        personalInformationDTO.setMilitaryService(String.valueOf(entity.getMilitaryService()));
         personalInformationDTO.setGender( entity.getGender() );
-        personalInformationDTO.setMaritalStatus( entity.getMaritalStatus() );
+        personalInformationDTO.setMaritalStatus(String.valueOf(entity.getMaritalStatus()));
+
       //  personalInformationDTO.setEmployee( entity.getEmployee() );
 
         return personalInformationDTO;
