@@ -47,14 +47,14 @@ public class Employee  {
     @Column(name = "LEVEL")
     private Level level;
 
-    @Column(name = "PHONE_NUMBER")
+    @Column(name = "PHONE NUMBER")
     private String employeePhone;
 
     @Email
     @Column(name = "EMAIL")
     private String employeeEmail;
 
-    @Column(name = "BIRTH_DATE")
+    @Column(name = "BIRTHDATE")
     private Date birthdate;
 
     @Enumerated(EnumType.STRING)
@@ -72,15 +72,15 @@ public class Employee  {
     private Date endingDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "CONTRACT_TYPE")
+    @Column(name = "CONTRACT TYPE")
     private Enum.ContractType contractType;
 
     @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    @JoinColumn(name = "PERSONAL_INFORMATION_ID")
+    @JoinColumn(name = "PERSONAL INFORMATION_ID")
     private PersonalInformation personalInformation;
 
     @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    @JoinColumn(name = "OTHER_INFORMATION_ID")
+    @JoinColumn(name = "OTHER INFORMATION_ID")
     private OtherInformation otherInformation;
 
     @ManyToMany(fetch = FetchType.EAGER)

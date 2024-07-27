@@ -44,9 +44,5 @@ public class OtherInformation {
     @Column(name = "EMERGENCY_PERSON_PHONE")
     private String emergencyPersonPhone;
 
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "EMPLOYEE_ID")
-
-//    private Employee employee;
 
 }

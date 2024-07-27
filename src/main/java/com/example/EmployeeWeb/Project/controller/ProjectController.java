@@ -33,7 +33,7 @@ public class ProjectController {
 
 
     @GetMapping("/list")
-    public ResponseEntity getAllEmployees() {
+    public ResponseEntity<?> getAllEmployees() {
         List<Project> projects = projectService.findAll();
         List<ProjectDTO> employeeDTORequests = projectDTOMapper.toListDTO(projects);
         return new ResponseEntity<>(employeeDTORequests, HttpStatus.OK);
@@ -42,20 +42,17 @@ public class ProjectController {
 
     @ResponseBody
     @PostMapping(value = "/addProject", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> saveProject(@RequestBody ProjectDTO projectDTO) {
-        try {
+    public ResponseEntity<?> saveProject(@RequestBody ProjectDTO projectDTO) throws Exception {
+
             Project project = projectDTOMapper.toEntity(projectDTO);
             Project savedProject = projectService.saveProject(project);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedProject);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+
     }
 
 
     @PutMapping(value = "/update/{projectId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateProject(@PathVariable Long projectId, @Valid @RequestBody ProjectDTO projectDto) {
-        try {
+    public ResponseEntity<?> updateProject(@PathVariable Long projectId, @Valid @RequestBody ProjectDTO projectDto) throws Exception {
             Optional<Project> existingProject = projectService.getProjectById(projectId);
             if (existingProject.isPresent()) {
                 projectDto.setProjectId(projectId);
@@ -66,20 +63,13 @@ public class ProjectController {
             else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Project not found");
             }
-        }
-        catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
 
-    }
+        }
 
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteProject(@PathVariable Long id) throws Exception {
 
-        try {
             Optional<Project> existingProject = projectService.getProjectById(id);
             if (existingProject.isPresent()) {
                 projectService.deleteProjectById(id);
@@ -87,8 +77,6 @@ public class ProjectController {
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Project not found");
             }
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+
     }
 }

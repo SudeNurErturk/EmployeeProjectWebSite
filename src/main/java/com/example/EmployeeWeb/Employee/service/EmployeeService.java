@@ -52,20 +52,7 @@ public class EmployeeService {
         return employeeRepository.findAll();
     }
 
-    public List<Employee> getEmployees(Specification<Employee> spec, Sort sort) {
-        return employeeRepository.findAll(spec, sort);
-    }
 
-
-    public Employee getEmployeeByEmployeeId(Long employeeId) {
-        return employeeRepository.findForEmployeeId(employeeId);
-    }
-
-
-
-    public Optional<Employee> getEmployeeById(Long id) {
-        return employeeRepository.findById(id);
-    }
 
     @Transactional
     public Employee saveEmployee(Employee employee) throws EntityNotFoundException {
@@ -111,9 +98,9 @@ public class EmployeeService {
         PersonalInformationDTO personalInfoDTO = employeeDTO.getPersonalInformation();
         existingEmployee.getPersonalInformation().setBirthdate(personalInfoDTO.getBirthdate());
         existingEmployee.getPersonalInformation().setPersonalSocialSecurityNumber(personalInfoDTO.getPersonalSocialSecurityNumber());
-        existingEmployee.getPersonalInformation().setMilitaryService(Enum.MilitaryService.valueOf(personalInfoDTO.getMilitaryService()));
+        existingEmployee.getPersonalInformation().setMilitaryService(personalInfoDTO.getMilitaryService());
         existingEmployee.getPersonalInformation().setGender((personalInfoDTO.getGender()));
-        existingEmployee.getPersonalInformation().setMaritalStatus(Enum.MaritalStatus.valueOf(personalInfoDTO.getMaritalStatus()));
+        existingEmployee.getPersonalInformation().setMaritalStatus(personalInfoDTO.getMaritalStatus());
 
 
         if (existingEmployee.getOtherInformation() == null) {
@@ -130,11 +117,7 @@ public class EmployeeService {
     }
 
 
-    @Transactional
-    public void deleteEmployee(Long id) {
 
-        employeeRepository.deleteById(id);
-    }
 
     @Transactional
     public void deleteEmployeeById(Long employeeId) {
@@ -148,19 +131,4 @@ public class EmployeeService {
             throw new EntityNotFoundException("Employee with ID " + employeeId + " not found");
         }
     }
-
-   @Transactional
-    public List<EmployeeDTORequest> convertToDTORequestList(List<Employee> employees) {
-        List<EmployeeDTO> employeeDTO = employeeDTOMapper.toListDTO(employees);
-        return employeeDTOMapper.toListDTOReguest(employeeDTO);
-    }
-
-//    public List<EmployeeDTO> filterEmployees(FilterEmployeeDTO filterRequest) {
-//        Specification<Employee> spec = EmployeeSpecification.buildSpecifications(filterRequest);
-//        List<Employee> employees = employeeRepository.findAll(spec);
-//        return employees.stream()
-//                .map(employeeDTOMapper::toDTO)
-//                .collect(Collectors.toList());
-//    }
-
 }

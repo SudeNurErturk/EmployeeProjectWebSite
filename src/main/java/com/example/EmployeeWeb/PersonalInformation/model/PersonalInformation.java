@@ -36,21 +36,15 @@ public class PersonalInformation {
     private String personalSocialSecurityNumber;
 
     @Enumerated(EnumType.STRING)
-  //  @Column(name = "Military_Service")
     private Enum.MilitaryService militaryService;
- //   private String militaryService;
 
 
     @Column(name = "Gender")
     private String gender;
-    //private String maritalStatus;
+
 
     @Enumerated(EnumType.STRING)
-   // @Column(name = "Marital_Status")
-   // @Size(max = 30, message = "Marital status should not exceed 30 characters")
     private Enum.MaritalStatus maritalStatus;
 
-//    @OneToOne(mappedBy = "personalInformation")
-//
-//    private Employee employee;
+
 }

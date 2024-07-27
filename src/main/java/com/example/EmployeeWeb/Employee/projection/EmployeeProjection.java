@@ -11,9 +11,9 @@ public interface EmployeeProjection {
     String getFullName();
     @JsonProperty("ID")
     String getId();
-    @JsonProperty("email")
+    @JsonProperty("EMAIL")
     String getEmployeeEmail();
-    @JsonProperty("Phone")
+    @JsonProperty("PHONE")
     String getEmployeePhone();
     @JsonProperty("LEVEL")
     String getLevel();

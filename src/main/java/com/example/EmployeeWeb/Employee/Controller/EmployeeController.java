@@ -82,24 +82,9 @@ public class EmployeeController {
         Pageable pageable = PageRequest.of(page, size);
         Specification<Employee> spec = EmployeeSpecification.buildSpecifications(filterEmployeeDTO, sortBy, sortDirection);
         Page<Employee> employeePage = employeeRepository.findAll(spec, pageable);
-        Page<EmployeeDTO> employeeDTOPage = employeeDTOMapper.toPageDTO(employeePage);
-
-        return employeeDTOPage;
+        return employeeDTOMapper.toPageDTO(employeePage);
     }
 
-
-//    @ResponseBody
-//    @PostMapping("/filter")
-//    public List<EmployeeDTO> filterEmployees(@RequestBody FilterEmployeeDTO filterRequest) {
-//
-//        Specification<Employee> spec = EmployeeSpecification.buildSpecifications(filterRequest);
-////        String sortBy = filterRequest.getSortBy() != null ? filterRequest.getSortBy() : "id";
-////        Sort.Direction sortDirection = "DESC".equalsIgnoreCase(filterRequest.getSortDirection()) ? Sort.Direction.DESC : Sort.Direction.ASC;
-////        Sort sort = Sort.by(sortDirection, sortBy);
-//
-//       // List<Employee> employees = employeeService.getEmployees(spec, sort);
-//        return employeeService.filterEmployees(filterRequest);
-//    }
 
 
     @ResponseBody

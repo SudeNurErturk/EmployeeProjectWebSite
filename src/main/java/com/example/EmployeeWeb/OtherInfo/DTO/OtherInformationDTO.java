@@ -22,6 +22,5 @@ public class OtherInformationDTO implements Serializable {
     private String emergencyPersonName;
 
     private String emergencyPersonPhone;
-    //private Employee manager;
 
 }

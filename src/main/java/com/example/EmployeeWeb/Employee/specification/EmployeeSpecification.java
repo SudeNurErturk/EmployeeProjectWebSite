@@ -12,30 +12,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 
 public class EmployeeSpecification  {
-    private final SpecSearchCriteria criteria;
 
-
-
-    public EmployeeSpecification(SpecSearchCriteria criteria) {
-        this.criteria = criteria;
-    }
-
-
-//        switch (criteria.getOperation()) {
-//            case EQUALITY:
-//                return builder.equal(root.get(criteria.getKey()), criteria.getValue());
-//            case NEGATION:
-//                return builder.notEqual(root.get(criteria.getKey()), criteria.getValue());
-//            case GREATER_THAN:
-//                return builder.greaterThan(root.get(criteria.getKey()), criteria.getValue().toString());
-//            case LESS_THAN:
-//                return builder.lessThan(root.get(criteria.getKey()), criteria.getValue().toString());
-//            case LIKE:
-//                return builder.like(root.get(criteria.getKey()), criteria.getValue().toString());
-//
-//            default:
-//                return null;
-//        }
 
         public static Specification<Employee> buildSpecifications(FilterEmployeeDTO filterEmployeeDTO,String sortBy, String sortDirection) {
             return new  Specification<Employee>() {

@@ -72,14 +72,10 @@ public class ProjectService {
         Project existingProject = projectRepository.findById(project.getProjectId())
                 .orElseThrow(() -> new Exception("Project not found"));
         ProjectDTO projectDTO = projectDTOMapper.toDTO(project);
-
-
         boolean isProjectNameChanged = !existingProject.getProjectName().equals(projectDTO.getProjectName());
-
         if (isProjectNameChanged) {
            throw  new ValidationException("You cannot change project name.");
         }
-   // Project project= projectDTOMapper.toEntity(project);
     return projectRepository.saveAndFlush(project);
     }
 }

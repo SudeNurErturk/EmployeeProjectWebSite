@@ -21,12 +21,12 @@ public class PersonalInformationDTO implements Serializable {
 
     private String personalSocialSecurityNumber;
 
-  //  private Enum.MilitaryService militaryService;
-    private String militaryService;
+    private Enum.MilitaryService militaryService;
+  //  private String militaryService;
 
     private String gender;
-    private String maritalStatus;
-   // private Enum.MaritalStatus maritalStatus;
+   // private String maritalStatus;
+    private Enum.MaritalStatus maritalStatus;
 
     private Employee employee;
 
