@@ -67,12 +67,10 @@ public class EmployeeService {
         return employeeRepository.save(employee);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public EmployeeDTO updateEmployee(Long employeeId ,EmployeeDTO employeeDTO) throws Exception {
-        Employee existingEmployee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new IllegalArgumentException("Employee not found"));
+        Employee existingEmployee = employeeRepository.findForEmployeeId(employeeId);
 
-      //  EmployeeDTO employeeDTO = employeeDTOMapper.toDTO(employee);
             boolean isPhoneChanged = !existingEmployee.getEmployeePhone().equals(employeeDTO.getEmployeePhone());
             boolean isEmailChanged = !existingEmployee.getEmployeeEmail().equals(employeeDTO.getEmployeeEmail());
 

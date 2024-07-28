@@ -28,6 +28,6 @@ public class PersonalInformationDTO implements Serializable {
    // private String maritalStatus;
     private Enum.MaritalStatus maritalStatus;
 
-    private Employee employee;
+    //private Employee employee;
 
 }

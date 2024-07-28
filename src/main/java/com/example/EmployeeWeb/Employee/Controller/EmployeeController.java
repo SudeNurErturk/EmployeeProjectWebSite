@@ -82,6 +82,7 @@ public class EmployeeController {
         Pageable pageable = PageRequest.of(page, size);
         Specification<Employee> spec = EmployeeSpecification.buildSpecifications(filterEmployeeDTO, sortBy, sortDirection);
         Page<Employee> employeePage = employeeRepository.findAll(spec, pageable);
+
         return employeeDTOMapper.toPageDTO(employeePage);
     }
 

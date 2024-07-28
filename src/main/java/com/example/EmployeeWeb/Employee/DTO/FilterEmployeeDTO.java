@@ -1,5 +1,7 @@
 package com.example.EmployeeWeb.Employee.DTO;
 
+import com.example.EmployeeWeb.OtherInfo.model.OtherInformation;
+import com.example.EmployeeWeb.PersonalInformation.model.PersonalInformation;
 import com.example.EmployeeWeb.enums.Enum;
 import com.example.EmployeeWeb.Employee.model.Level;
 
@@ -34,44 +36,37 @@ public class FilterEmployeeDTO {
     private String employeeEmail;
 
 
-    @JsonProperty(value="phone")
 
     private String employeePhone;
 
 
     @JsonProperty(value="level")
-
     private Level level;
 
-    @JsonProperty(value="otherInformation")
+
     private OtherInformationDTO otherInformation;
 
 
-    @JsonProperty(value="personalInformation")
+
     private PersonalInformationDTO personalInformation;
 
 
-    @JsonProperty(value="birthdate")
+
     private Date birthdate;
 
 
     @JsonProperty(value="team")
     private Enum.Team team;
 
-
     @JsonProperty(value="startingDate")
     private Date startingDate;
-
 
     @JsonProperty(value="endingDate")
     private Date endingDate;
 
-
     @JsonProperty(value="workingPlace")
     private Enum.WorkingPlace workingPlace;
 
-
-    @JsonProperty(value="contractType")
     private Enum.ContractType contractType;
 
     @Override

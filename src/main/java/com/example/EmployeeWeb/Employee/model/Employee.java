@@ -1,6 +1,7 @@
 package com.example.EmployeeWeb.Employee.model;
 
 
+import com.example.EmployeeWeb.OtherInfo.DTO.OtherInformationDTO;
 import com.example.EmployeeWeb.OtherInfo.model.OtherInformation;
 import com.example.EmployeeWeb.PersonalInformation.model.PersonalInformation;
 import com.example.EmployeeWeb.Project.model.Project;
@@ -47,14 +48,14 @@ public class Employee  {
     @Column(name = "LEVEL")
     private Level level;
 
-    @Column(name = "PHONE NUMBER")
+    @Column(name = "PHONE_NUMBER")
     private String employeePhone;
 
     @Email
     @Column(name = "EMAIL")
     private String employeeEmail;
 
-    @Column(name = "BIRTHDATE")
+    @Column(name = "BIRTH_DATE")
     private Date birthdate;
 
     @Enumerated(EnumType.STRING)
@@ -72,15 +73,15 @@ public class Employee  {
     private Date endingDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "CONTRACT TYPE")
+    @Column(name = "CONTRACT_TYPE")
     private Enum.ContractType contractType;
 
-    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    @JoinColumn(name = "PERSONAL INFORMATION_ID")
+    @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @JoinColumn(name = "PERSONAL_INFORMATION_ID")
     private PersonalInformation personalInformation;
 
-    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    @JoinColumn(name = "OTHER INFORMATION_ID")
+    @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @JoinColumn(name = "OTHER_INFORMATION_ID")
     private OtherInformation otherInformation;
 
     @ManyToMany(fetch = FetchType.EAGER)
