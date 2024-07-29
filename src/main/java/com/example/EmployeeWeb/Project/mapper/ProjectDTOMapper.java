@@ -1,12 +1,9 @@
 package com.example.EmployeeWeb.Project.mapper;
 
-import com.example.EmployeeWeb.Project.DTO.ProjectDTO;
+import com.example.EmployeeWeb.Project.dto.ProjectDTO;
 import com.example.EmployeeWeb.Project.model.Project;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-import javax.annotation.processing.Generated;
+
+import java.util.*;
 
 import com.example.EmployeeWeb.common.BaseMapper;
 import org.springframework.stereotype.Component;
@@ -16,7 +13,7 @@ public class ProjectDTOMapper implements BaseMapper<Project, ProjectDTO> {
 
     @Override
     public Project toEntity(ProjectDTO dto) {
-        if ( dto == null ) {
+        if (Objects.isNull(dto)) {
             return null;
         }
 
@@ -33,41 +30,42 @@ public class ProjectDTOMapper implements BaseMapper<Project, ProjectDTO> {
         if ( set != null ) {
             project.setEmployeeIds( new LinkedHashSet<Long>( set ) );
         }
-
         return project;
     }
 
     @Override
-    public ProjectDTO toDTO(Project entity) {
-        if ( entity == null ) {
+    public ProjectDTO toDTO(Project project) {
+        if ( project == null ) {
             return null;
         }
 
         ProjectDTO projectDTO = new ProjectDTO();
 
-        projectDTO.setProjectId( entity.getProjectId() );
-        projectDTO.setProjectName( entity.getProjectName() );
-        projectDTO.setProjectType( entity.getProjectType() );
-        projectDTO.setProjectDepartment( entity.getProjectDepartment() );
-        projectDTO.setMediaInformation( entity.getMediaInformation() );
-        Set<Long> set = entity.getEmployeeIds();
+        projectDTO.setProjectId( project.getProjectId() );
+        projectDTO.setProjectName( project.getProjectName() );
+        projectDTO.setProjectType( project.getProjectType() );
+        projectDTO.setProjectDepartment( project.getProjectDepartment() );
+        projectDTO.setMediaInformation( project.getMediaInformation() );
+        Set<Long> set = project.getEmployeeIds();
+
         if ( set != null ) {
             projectDTO.setEmployeeIds( new LinkedHashSet<Long>( set ) );
         }
-        projectDTO.setVpnUserName( entity.getVpnUserName() );
-        projectDTO.setVpnPassword( entity.getVpnPassword() );
+
+        projectDTO.setVpnUserName( project.getVpnUserName() );
+        projectDTO.setVpnPassword( project.getVpnPassword() );
 
         return projectDTO;
     }
 
     @Override
-    public List<ProjectDTO> toListDTO(List<Project> entities) {
-        if ( entities == null ) {
+    public List<ProjectDTO> toListDTO(List<Project> projects) {
+        if ( Objects.isNull(projects) ) {
             return null;
         }
 
-        List<ProjectDTO> list = new ArrayList<ProjectDTO>( entities.size() );
-        for ( Project project : entities ) {
+        List<ProjectDTO> list = new ArrayList<ProjectDTO>( projects.size() );
+        for ( Project project : projects ) {
             list.add( toDTO( project ) );
         }
 

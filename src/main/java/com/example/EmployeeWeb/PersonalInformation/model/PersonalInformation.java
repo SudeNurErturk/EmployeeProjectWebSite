@@ -1,11 +1,8 @@
 package com.example.EmployeeWeb.PersonalInformation.model;
 
-import com.example.EmployeeWeb.Employee.model.Employee;
 import com.example.EmployeeWeb.enums.Enum;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,9 +28,9 @@ public class PersonalInformation {
 
     private Date birthdate;
 
-
     @NotEmpty
     private String personalSocialSecurityNumber;
+
 
     @Enumerated(EnumType.STRING)
     private Enum.MilitaryService militaryService;
@@ -45,7 +42,5 @@ public class PersonalInformation {
 
     @Enumerated(EnumType.STRING)
     private Enum.MaritalStatus maritalStatus;
-
-
 
 }

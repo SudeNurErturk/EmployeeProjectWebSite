@@ -13,7 +13,6 @@ import java.util.Set;
 public class Project {
 
 
-
     @Serial
     private static final long serialVersionUID = 11273137873139349L;
 
@@ -64,7 +63,6 @@ public class Project {
     // VPN password encryption example (this is a simplistic example, not for production use)
     @Transient
     public String getEncryptedVpnPassword() {
-        // Simulate password encryption
         return "encrypted:" + this.vpnPassword;
     }
 

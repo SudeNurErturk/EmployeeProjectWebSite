@@ -1,12 +1,12 @@
 package com.example.EmployeeWeb.PersonalInformation.mapper;
 
-import com.example.EmployeeWeb.PersonalInformation.DTO.PersonalInformationDTO;
+import com.example.EmployeeWeb.PersonalInformation.dto.PersonalInformationDTO;
 import com.example.EmployeeWeb.PersonalInformation.model.PersonalInformation;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.example.EmployeeWeb.common.BaseMapper;
-import com.example.EmployeeWeb.enums.Enum;
 import org.springframework.stereotype.Component;
 
 
@@ -15,7 +15,7 @@ public class PersonalInformationDTOMapper implements BaseMapper<PersonalInformat
 
     @Override
     public PersonalInformation toEntity(PersonalInformationDTO dto) {
-        if ( dto == null ) {
+        if (Objects.isNull(dto)) {
             return null;
         }
 
@@ -33,33 +33,32 @@ public class PersonalInformationDTOMapper implements BaseMapper<PersonalInformat
     }
 
     @Override
-    public PersonalInformationDTO toDTO(PersonalInformation entity) {
-        if ( entity == null ) {
+    public PersonalInformationDTO toDTO(PersonalInformation personalInformation) {
+        if ( Objects.isNull(personalInformation)  ) {
             return null;
         }
 
         PersonalInformationDTO personalInformationDTO = new PersonalInformationDTO();
 
-        personalInformationDTO.setId( entity.getId() );
-        personalInformationDTO.setBirthdate( entity.getBirthdate() );
-        personalInformationDTO.setPersonalSocialSecurityNumber( entity.getPersonalSocialSecurityNumber() );
-        personalInformationDTO.setMilitaryService(entity.getMilitaryService());
-        personalInformationDTO.setGender( entity.getGender() );
-        personalInformationDTO.setMaritalStatus(entity.getMaritalStatus());
+        personalInformationDTO.setId( personalInformation.getId() );
+        personalInformationDTO.setBirthdate( personalInformation.getBirthdate() );
+        personalInformationDTO.setPersonalSocialSecurityNumber( personalInformation.getPersonalSocialSecurityNumber() );
+        personalInformationDTO.setMilitaryService(personalInformation.getMilitaryService());
+        personalInformationDTO.setGender( personalInformation.getGender() );
+        personalInformationDTO.setMaritalStatus(personalInformation.getMaritalStatus());
 
-      //  personalInformationDTO.setEmployee( entity.getEmployee() );
 
         return personalInformationDTO;
     }
 
     @Override
-    public List<PersonalInformationDTO> toListDTO(List<PersonalInformation> entities) {
-        if ( entities == null ) {
+    public List<PersonalInformationDTO> toListDTO(List<PersonalInformation> personalInformations) {
+        if ( Objects.isNull(personalInformations)  ) {
             return null;
         }
 
-        List<PersonalInformationDTO> list = new ArrayList<PersonalInformationDTO>( entities.size() );
-        for ( PersonalInformation personalInformation : entities ) {
+        List<PersonalInformationDTO> list = new ArrayList<PersonalInformationDTO>( personalInformations.size() );
+        for ( PersonalInformation personalInformation : personalInformations ) {
             list.add( toDTO( personalInformation ) );
         }
 

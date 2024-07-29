@@ -1,9 +1,8 @@
 package com.example.EmployeeWeb.Project.validation;
 
-import com.example.EmployeeWeb.Project.DTO.ProjectDTO;
+import com.example.EmployeeWeb.Project.dto.ProjectDTO;
 import com.example.EmployeeWeb.Project.model.Project;
 import com.example.EmployeeWeb.Project.repository.ProjectRepository;
-import jakarta.validation.ValidationException;
 import org.springframework.stereotype.Component;
 
 @Component
